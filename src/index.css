@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Chewy&family=Geist:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 0 0% 0%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 9% 96%;
+    --secondary-foreground: 0 0% 16.5%;
+    --muted: 220 9% 96%;
+    --muted-foreground: 0 0% 16.5%;
+    --accent: 220 9% 96%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 9% 96%;
+    --input: 220 9% 96%;
+    --ring: 0 0% 0%;
+    --radius: 0px;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 16.5%;
+    --sidebar-primary: 0 0% 0%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 9% 96%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 220 9% 96%;
+    --sidebar-ring: 0 0% 0%;
+    --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    @apply bg-white text-black antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .font-logo {
+    font-family: 'Chewy', cursive;
+    letter-spacing: 0.02em;
+  }
+
+  .pk-badge {
+    display: none;
+  }
+
+  @media (min-width: 640px) {
+    .pk-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+  }
+
+  input, textarea, select {
+    font-family: var(--font-sans);
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
+}
