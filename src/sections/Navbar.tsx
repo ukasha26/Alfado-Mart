@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
 import { Menu, Search, ShoppingCart } from "lucide-react";
 import { useUIStore } from "@/stores/uiStore";
 import { useCartStore } from "@/stores/cartStore";
@@ -24,10 +23,7 @@ export function Navbar() {
   }, []);
 
   return (
-    <motion.nav
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3, delay: 0.1 }}
+    <nav
       className={`sticky top-0 bg-white transition-all duration-200 ${
         isSticky ? "border-b border-[#F3F4F6] shadow-sm" : ""
       }`}
@@ -54,15 +50,7 @@ export function Navbar() {
 
         {/* Center: Search Bar */}
         <div className="hidden md:flex items-center justify-center flex-1 px-8">
-          <motion.div
-            initial={{ width: 0, opacity: 0 }}
-            animate={{
-              width: searchFocused ? 320 : 200,
-              opacity: 1,
-            }}
-            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1], delay: 0.2 }}
-            className="relative"
-          >
+          <div className={`relative transition-all duration-300 ease-in-out ${searchFocused ? "w-[320px]" : "w-[200px]"}`}>
             <Search
               size={16}
               className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2A2A2A]"
@@ -77,7 +65,7 @@ export function Navbar() {
               onBlur={() => setSearchFocused(false)}
               className="w-full pl-9 pr-4 py-2.5 border border-[#2A2A2A] bg-white text-sm text-black placeholder:text-[#2A2A2A] focus:border-black focus:outline-none focus:ring-2 focus:ring-black/5 transition-all duration-200"
             />
-          </motion.div>
+          </div>
         </div>
 
         {/* Right: PK flag + Cart */}
@@ -142,6 +130,6 @@ export function Navbar() {
           </div>
         </div>
       )}
-    </motion.nav>
+    </nav>
   );
 }

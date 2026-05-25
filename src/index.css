@@ -54,15 +54,11 @@
   }
 
   .pk-badge {
-    display: none;
-  }
-
-  @media (min-width: 640px) {
-    .pk-badge {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   input, textarea, select {
