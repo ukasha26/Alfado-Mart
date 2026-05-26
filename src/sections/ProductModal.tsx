@@ -182,6 +182,12 @@ export function ProductModal() {
       // Since no-cors doesn't return readable response, we assume success
       setOrderId(generatedOrderId);
       setOrderSuccess(true);
+      if ((window as any).fbq) {
+        (window as any).fbq("track", "Purchase", {
+          value: orderSummaryTotal,
+          currency: "PKR",
+        });
+      }
       if (!product) {
         clearCart();
       }
