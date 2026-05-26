@@ -7,7 +7,9 @@ import { useToastStore } from "@/stores/toastStore";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { Backdrop } from "@/components/Backdrop";
 import { QuantitySelector } from "@/components/QuantitySelector";
+import { Seo } from "@/components/Seo";
 import { products } from "@/data/products";
+import { SITE_URL, type SeoProductDetails } from "@/lib/seo";
 import { sendOrderToSheets } from "@/lib/orderService";
 
 interface FormData {
@@ -201,11 +203,34 @@ export function ProductModal() {
   if (!product && !checkoutRequested) return null;
 
   const isCheckoutView = showCheckout || checkoutRequested;
+  const productSeo: SeoProductDetails | null = product
+    ? {
+        name: product.name,
+        description: product.description,
+        image: product.image,
+        price: product.price,
+        currency: "PKR",
+        availability: product.inStock ? "InStock" : "OutOfStock",
+        sku: product.id,
+        brand: "Alfado Mart",
+        url: SITE_URL,
+      }
+    : null;
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
+          {productSeo ? (
+            <Seo
+              title={`${product.name} | Alfado Mart`}
+              description={product.description}
+              image={product.image}
+              canonicalUrl={SITE_URL}
+              pageType="product"
+              productDetails={productSeo}
+            />
+          ) : null}
           <Backdrop onClick={handleClose} zIndex={300} />
           <motion.div
             initial={{ opacity: 0, y: "100%", scale: 0.95 }}

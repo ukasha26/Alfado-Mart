@@ -2,6 +2,14 @@ import { lazy, Suspense } from "react";
 import { AnnouncementBar } from "@/sections/AnnouncementBar";
 import { Navbar } from "@/sections/Navbar";
 import { HeroBanner } from "@/sections/HeroBanner";
+import { Seo } from "@/components/Seo";
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_IMAGE_PATH,
+  DEFAULT_KEYWORDS,
+  DEFAULT_TITLE,
+  SITE_URL,
+} from "@/lib/seo";
 
 const Sidebar = lazy(() =>
   import("@/sections/Sidebar").then((module) => ({ default: module.Sidebar }))
@@ -28,6 +36,14 @@ const Footer = lazy(() =>
 function App() {
   return (
     <div className="min-h-screen bg-white">
+      <Seo
+        title={DEFAULT_TITLE}
+        description={DEFAULT_DESCRIPTION}
+        keywords={DEFAULT_KEYWORDS}
+        canonicalUrl={SITE_URL}
+        image={DEFAULT_IMAGE_PATH}
+        pageType="website"
+      />
       <AnnouncementBar />
       <Navbar />
       <main>
