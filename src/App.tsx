@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense } from "react";
 import { AnnouncementBar } from "@/sections/AnnouncementBar";
 import { Navbar } from "@/sections/Navbar";
 import { HeroBanner } from "@/sections/HeroBanner";
@@ -33,67 +33,7 @@ const Footer = lazy(() =>
   import("@/sections/Footer").then((module) => ({ default: module.Footer }))
 );
 
-const META_PIXEL_ID = "1668631827621917";
-
-type MetaPixel = ((...args: unknown[]) => void) & {
-  queue: unknown[][];
-  callMethod?: (...args: unknown[]) => void;
-  push: MetaPixel;
-  loaded?: boolean;
-  version?: string;
-};
-
-declare global {
-  interface Window {
-    fbq?: MetaPixel;
-    _fbq?: MetaPixel;
-    __metaPixelLoaded?: boolean;
-  }
-}
-
-function initializeMetaPixel() {
-  if (typeof window === "undefined" || window.__metaPixelLoaded) {
-    return;
-  }
-
-  window.__metaPixelLoaded = true;
-
-  if (!window.fbq) {
-    const fbq = ((...args: unknown[]) => {
-      if (fbq.callMethod) {
-        fbq.callMethod(...args);
-        return;
-      }
-
-      fbq.queue.push(args);
-    }) as MetaPixel;
-
-    fbq.queue = [];
-    fbq.push = fbq;
-    fbq.loaded = true;
-    fbq.version = "2.0";
-
-    window.fbq = fbq;
-    window._fbq = fbq;
-  }
-
-  if (!document.getElementById("meta-pixel-base")) {
-    const script = document.createElement("script");
-    script.id = "meta-pixel-base";
-    script.async = true;
-    script.src = "https://connect.facebook.net/en_US/fbevents.js";
-    document.head.appendChild(script);
-  }
-
-  window.fbq("init", META_PIXEL_ID);
-  window.fbq("track", "PageView");
-}
-
 function App() {
-  useEffect(() => {
-    initializeMetaPixel();
-  }, []);
-
   return (
     <div className="min-h-screen bg-white">
       <Seo
