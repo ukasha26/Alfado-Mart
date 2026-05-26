@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react';
 import { lazy, Suspense } from "react";
 import { AnnouncementBar } from "@/sections/AnnouncementBar";
 import { Navbar } from "@/sections/Navbar";
@@ -101,6 +102,7 @@ function App() {
         <ProductModal />
         <ToastContainer />
       </Suspense>
+      <Analytics />
     </div>
   );
 }
