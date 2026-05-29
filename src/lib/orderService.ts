@@ -1,5 +1,7 @@
-// 🌐 Google Apps Script Web App URL for Alfado Mart
-const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbz9qwkjaNe7w26r5CV2Jpq_0VoSFNrZA1Jwo0oK1ZTIvWqUNKjDhRH9FbkhBc4wtr-k/exec";
+// Google Apps Script Web App URL for Alfado Mart
+const GOOGLE_SHEET_URL =
+  import.meta.env.VITE_GOOGLE_SHEET_URL ||
+  "https://script.google.com/macros/s/AKfycbz9qwkjaNe7w26r5CV2Jpq_0VoSFNrZA1Jwo0oK1ZTIvWqUNKjDhRH9FbkhBc4wtr-k/exec";
 
 /**
  * 1. Google Sheets par Order Send karne ka function
@@ -19,6 +21,7 @@ export const sendOrderToSheets = async (formData: {
     // Keys mapping as per your Google Script structure
     const payload = {
       name: formData.fullName,
+      fullName: formData.fullName,
       phone: formData.phone,
       whatsapp: formData.whatsapp || "",
       address: formData.address,
@@ -26,6 +29,7 @@ export const sendOrderToSheets = async (formData: {
       email: formData.email,
       product: formData.product,
       quantity: formData.quantity,
+      instructions: formData.instructions || "",
       date: new Date().toLocaleString()
     };
 
