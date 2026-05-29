@@ -207,8 +207,6 @@ export function ProductModal() {
     }
   };
 
-  if (!product && !checkoutRequested) return null;
-
   const isCheckoutView = showCheckout || checkoutRequested;
 
   useEffect(() => {
@@ -231,6 +229,8 @@ export function ProductModal() {
         url: SITE_URL,
       }
     : null;
+
+  if (!isOpen || (!product && !checkoutRequested)) return null;
 
   return (
     <AnimatePresence>
