@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Check, Loader2 } from "lucide-react";
 import { useUIStore } from "@/stores/uiStore";
@@ -49,6 +49,7 @@ export function ProductModal() {
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const modalScrollRef = useRef<HTMLDivElement | null>(null);
 
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
@@ -209,6 +210,14 @@ export function ProductModal() {
   if (!product && !checkoutRequested) return null;
 
   const isCheckoutView = showCheckout || checkoutRequested;
+
+  useEffect(() => {
+    if (!isOpen) return;
+    if (!isCheckoutView && !orderSuccess) return;
+
+    modalScrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }, [isOpen, isCheckoutView, orderSuccess]);
+
   const productSeo: SeoProductDetails | null = product
     ? {
         name: product.name,
@@ -245,6 +254,7 @@ export function ProductModal() {
             transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
             className="fixed inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center bg-white md:bg-transparent overflow-y-auto"
             style={{ zIndex: 300 }}
+            ref={modalScrollRef}
           >
             <div className="bg-white w-full md:max-w-[1200px] md:max-h-[90vh] md:overflow-y-auto relative">
               {/* Close Button */}
