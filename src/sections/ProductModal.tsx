@@ -169,7 +169,7 @@ export function ProductModal() {
 
     try {
       await sendOrderToSheets({
-        name: formData.fullName.trim(),
+        fullName: formData.fullName.trim(),
         phone: formData.phone.trim(),
         whatsapp: formData.whatsapp.trim() || formData.phone.trim(),
         address: formData.address.trim(),
@@ -177,7 +177,7 @@ export function ProductModal() {
         email: formData.email.trim(),
         product: orderProductLabel,
         quantity: orderQuantityLabel,
-        date: formattedDate,
+        instructions: formData.instructions.trim(),
       });
 
       // Since no-cors doesn't return readable response, we assume success
@@ -256,7 +256,7 @@ export function ProductModal() {
             style={{ zIndex: 300 }}
             ref={modalScrollRef}
           >
-            <div className="bg-white w-full md:max-w-[1200px] md:max-h-[90vh] md:overflow-y-auto relative">
+            <div className="bg-white w-full md:max-w-[1200px] max-h-[90vh] overflow-y-auto relative">
               {/* Close Button */}
               <button
                 onClick={handleClose}
@@ -400,6 +400,27 @@ export function ProductModal() {
               ) : (
                 /* Checkout Form View */
                 <div className="max-w-[640px] mx-auto p-6 md:p-12">
+                  {/* Compact Product Preview for mobile/checkout */}
+                  {product && (
+                    <div className="mb-4 flex items-center gap-4">
+                      <div className="w-20 h-20 flex-shrink-0 border border-[#F3F4F6] overflow-hidden rounded">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-black line-clamp-2">
+                          {product.name}
+                        </p>
+                        <p className="text-xs text-[#6b7280] mt-1">Qty {quantity}</p>
+                      </div>
+                      <div className="text-sm font-semibold text-black">
+                        {formatPrice(product.price * quantity)}
+                      </div>
+                    </div>
+                  )}
                   <h2 className="text-xl md:text-2xl font-semibold text-black mb-6">
                     Order Details
                   </h2>
@@ -585,11 +606,11 @@ export function ProductModal() {
 
                     <div>
                       <label className="block text-xs font-medium text-[#2A2A2A] mb-1.5">
-                        Delivery Instructions
+                        Nearest Famous Place
                       </label>
                       <textarea
                         rows={3}
-                        placeholder="Any special instructions (optional)"
+                        placeholder="Nearest famous place (optional)"
                         value={formData.instructions}
                         onChange={(e) => updateField("instructions", e.target.value)}
                         className="w-full px-4 py-3.5 border border-[#2A2A2A] text-sm text-black placeholder:text-[#2A2A2A] focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all duration-200 resize-none"
