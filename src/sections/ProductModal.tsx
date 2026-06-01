@@ -177,6 +177,7 @@ export function ProductModal() {
         email: formData.email.trim(),
         product: orderProductLabel,
         quantity: orderQuantityLabel,
+        price: orderSummaryTotal,
         instructions: formData.instructions.trim(),
       });
 
@@ -610,7 +611,7 @@ export function ProductModal() {
                       </label>
                       <textarea
                         rows={3}
-                        placeholder="Nearest famous place (optional)"
+                        placeholder="Enter nearest famous place"
                         value={formData.instructions}
                         onChange={(e) => updateField("instructions", e.target.value)}
                         className="w-full px-4 py-3.5 border border-[#2A2A2A] text-sm text-black placeholder:text-[#2A2A2A] focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all duration-200 resize-none"
