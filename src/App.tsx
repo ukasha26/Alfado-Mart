@@ -1,8 +1,8 @@
 import { Analytics } from '@vercel/analytics/react';
 import { lazy, Suspense } from "react";
-import { AnnouncementBar } from "@/sections/AnnouncementBar";
 import { Navbar } from "@/sections/Navbar";
 import { HeroBanner } from "@/sections/HeroBanner";
+import { FeaturedProduct } from "./sections/FeaturedProduct.tsx";
 import { Seo } from "@/components/Seo";
 import {
   DEFAULT_DESCRIPTION,
@@ -24,12 +24,6 @@ const ProductModal = lazy(() =>
 const ToastContainer = lazy(() =>
   import("@/components/Toast").then((module) => ({ default: module.ToastContainer }))
 );
-const FilterBar = lazy(() =>
-  import("@/sections/FilterBar").then((module) => ({ default: module.FilterBar }))
-);
-const ProductGrid = lazy(() =>
-  import("@/sections/ProductGrid").then((module) => ({ default: module.ProductGrid }))
-);
 const Footer = lazy(() =>
   import("@/sections/Footer").then((module) => ({ default: module.Footer }))
 );
@@ -45,40 +39,20 @@ function App() {
         image={DEFAULT_IMAGE_PATH}
         pageType="website"
       />
-      <AnnouncementBar />
       <Navbar />
+      {/* Site banner uploaded to public/Banner.png — full-width hero below navbar */}
+      <div className="w-full relative bg-black overflow-hidden">
+        <img
+          src="/Banner.png"
+          alt="Site banner"
+          className="block w-full h-auto max-h-[240px] sm:max-h-[320px] md:h-[420px] md:max-h-none object-contain md:object-cover md:object-center"
+        />
+        {/* subtle dark overlay for text contrast */}
+        <div className="absolute inset-0 bg-black/30 pointer-events-none" />
+      </div>
       <main>
         <HeroBanner />
-        <Suspense
-          fallback={
-            <>
-              <section className="bg-white border-b border-[#F3F4F6]">
-                <div className="max-w-[1440px] mx-auto px-4 md:px-12">
-                  <div className="h-[49px] md:h-[56px]" />
-                </div>
-              </section>
-              <section className="bg-white">
-                <div className="max-w-[1440px] mx-auto px-4 md:px-12 py-6 md:py-12">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
-                    {Array.from({ length: 8 }).map((_, index) => (
-                      <div key={index} className="border border-[#F3F4F6] bg-white">
-                        <div className="aspect-[4/3] bg-[#F3F4F6] animate-pulse" />
-                        <div className="p-4 space-y-3">
-                          <div className="h-4 w-4/5 bg-[#F3F4F6] animate-pulse" />
-                          <div className="h-5 w-1/2 bg-[#F3F4F6] animate-pulse" />
-                          <div className="h-11 bg-[#F3F4F6] animate-pulse md:hidden" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-            </>
-          }
-        >
-          <FilterBar />
-          <ProductGrid />
-        </Suspense>
+        <FeaturedProduct />
       </main>
       <Suspense fallback={<div className="h-24 bg-white" />}>
         <Footer />

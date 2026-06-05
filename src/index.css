@@ -88,3 +88,16 @@
 .animate-shimmer {
   animation: shimmer 1.5s infinite;
 }
+
+@keyframes ticker {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ticker {
+  animation: ticker 18s linear infinite;
+}

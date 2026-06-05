@@ -7,10 +7,12 @@ import { useToastStore } from "@/stores/toastStore";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { Backdrop } from "@/components/Backdrop";
 import { QuantitySelector } from "@/components/QuantitySelector";
+import { ProductGallery } from "@/components/ProductGallery";
 import { Seo } from "@/components/Seo";
 import { products } from "@/data/products";
 import { SITE_URL, type SeoProductDetails } from "@/lib/seo";
 import { sendOrderToSheets } from "@/lib/orderService";
+import { formatDiscountPercentage } from "@/lib/pricing";
 
 interface FormData {
   fullName: string;
@@ -68,6 +70,11 @@ export function ProductModal() {
     () => products.find((p) => p.id === selectedProductId),
     [selectedProductId]
   );
+
+  const galleryImages = product?.images?.length ? product.images : product ? [product.image] : [];
+  const discountLabel = product?.originalPrice
+    ? `Discount ${formatDiscountPercentage(product.originalPrice, product.price)}`
+    : "Discount";
 
   const formatPrice = (price: number) => `Rs. ${price.toLocaleString("en-PK")}`;
 
@@ -145,6 +152,9 @@ export function ProductModal() {
     () => orderItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
     [orderItems]
   );
+
+  // Delivery charge (0 means Free)
+  const deliveryCharge = 0;
 
   const orderProductLabel = useMemo(() => {
     return orderItems.map((item) => `${item.product.name} x${item.quantity}`).join(" | ");
@@ -270,24 +280,16 @@ export function ProductModal() {
               {!isCheckoutView && product ? (
                 /* Product Detail View */
                 <div className="md:grid md:grid-cols-[55%_45%]">
-                  {/* Image */}
-                  <div className="relative" style={{ aspectRatio: "4/3" }}>
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
+                  {/* Image Carousel */}
+                  <div className="relative border-b border-[#F3F4F6] md:border-b-0 md:border-r md:border-[#F3F4F6] bg-white overflow-hidden">
+                    <ProductGallery
+                      images={galleryImages}
+                      altBase={product.name}
+                      className="w-full"
                     />
-                    {product.badge && (
-                      <div
-                        className={`absolute top-4 left-4 px-2 py-1 text-xs font-medium tracking-wider ${
-                          product.badge === "SALE"
-                            ? "bg-[#F2A93B] text-black"
-                            : "bg-black text-white"
-                        }`}
-                      >
-                        {product.badge}
-                      </div>
-                    )}
+                    <div className="absolute top-4 left-4 z-10 px-2 py-1 text-xs font-medium tracking-wider bg-[#F2A93B] text-black">
+                      {discountLabel}
+                    </div>
                   </div>
 
                   {/* Details */}
@@ -311,6 +313,36 @@ export function ProductModal() {
                       {product.description}
                     </p>
 
+                    <div className="mt-5 space-y-4 rounded-2xl border border-[#F3F4F6] bg-white p-4">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black">
+                          Features
+                        </p>
+                        <ul className="mt-3 space-y-2 text-sm leading-6 text-[#2A2A2A]">
+                          {product.features?.map((feature) => (
+                            <li key={feature} className="flex gap-2">
+                              <span className="mt-2 h-1.5 w-1.5 rounded-full bg-black" />
+                              <span>{feature}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black">
+                          Caution
+                        </p>
+                        <ul className="mt-3 space-y-2 text-sm leading-6 text-[#2A2A2A]">
+                          {product.caution?.map((item) => (
+                            <li key={item} className="flex gap-2">
+                              <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#D97706]" />
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+
                     <div className="mt-5 inline-flex items-center rounded-full border border-black px-3 py-1 text-xs font-medium text-black">
                       Cash On Delivery
                     </div>
@@ -329,7 +361,7 @@ export function ProductModal() {
                       <div className="mt-2 flex items-center justify-between text-sm">
                         <span className="text-[#2A2A2A]">Total</span>
                         <span className="font-semibold text-black">
-                          {formatPrice(product.price * quantity)}
+                          {formatPrice(product.price * quantity + deliveryCharge)}
                         </span>
                       </div>
                     </div>
@@ -404,11 +436,11 @@ export function ProductModal() {
                   {/* Compact Product Preview for mobile/checkout */}
                   {product && (
                     <div className="mb-4 flex items-center gap-4">
-                      <div className="w-20 h-20 flex-shrink-0 border border-[#F3F4F6] overflow-hidden rounded">
+                      <div className="w-20 h-20 flex-shrink-0 border border-[#F3F4F6] overflow-hidden rounded flex items-center justify-center bg-white">
                         <img
                           src={product.image}
                           alt={product.name}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain p-1"
                         />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -451,6 +483,18 @@ export function ProductModal() {
                         </span>
                         <span className="text-base font-semibold text-black">
                           {formatPrice(orderSummaryTotal)}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm py-1">
+                        <span className="text-sm font-medium text-black">Delivery</span>
+                        <span className="text-black font-medium">
+                          {deliveryCharge === 0 ? "Free" : formatPrice(deliveryCharge)}
+                        </span>
+                      </div>
+                      <div className="border-t border-[#e5e7eb] mt-2 pt-2 flex justify-between">
+                        <span className="text-sm font-medium text-black">Total</span>
+                        <span className="text-base font-semibold text-black">
+                          {formatPrice(orderSummaryTotal + deliveryCharge)}
                         </span>
                       </div>
                     </div>
