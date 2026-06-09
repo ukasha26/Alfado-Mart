@@ -1,20 +1,20 @@
 export const SITE_NAME = "Alfado Mart";
 export const SITE_URL = "https://alfadomart.store";
 
-export const DEFAULT_TITLE = "Alfado Mart - Premium Online Marketplace";
+export const DEFAULT_TITLE = "Multi Functional Vegetable Cutter & Stainless Steel Vegetable Cutter | Alfado Mart";
 export const DEFAULT_DESCRIPTION =
-  "Shop electronics, fashion, home essentials, and more at Alfado Mart, Pakistan's multi-vendor online marketplace.";
+  "Shop the Multi Functional Vegetable Cutter and Stainless Steel Vegetable Cutter at Alfado Mart with secure checkout, fast support, and free home delivery across Pakistan.";
 export const DEFAULT_KEYWORDS = [
   "Alfado Mart",
-  "online shopping Pakistan",
-  "multi-vendor marketplace",
-  "e-commerce store",
-  "electronics shopping",
-  "fashion store",
-  "home essentials",
+  "Multi Functional Vegetable Cutter",
+  "Stainless Steel Vegetable Cutter",
+  "vegetable cutter Pakistan",
+  "kitchen tools online",
+  "free home delivery",
   "buy online",
+  "Alfado Mart products",
 ];
-export const DEFAULT_IMAGE_PATH = "/products/headphones.jpg";
+export const DEFAULT_IMAGE_PATH = "/products/vegetable-cutter-1.jpeg";
 
 export type SeoPageType = "website" | "product" | "article";
 
@@ -30,6 +30,8 @@ export interface SeoProductDetails {
   url?: string;
 }
 
+export type SeoFeaturedProduct = SeoProductDetails;
+
 export interface SeoProps {
   title?: string;
   description?: string;
@@ -39,6 +41,7 @@ export interface SeoProps {
   canonicalPath?: string;
   pageType?: SeoPageType;
   productDetails?: SeoProductDetails | null;
+  featuredProducts?: SeoFeaturedProduct[];
 }
 
 export function toAbsoluteUrl(value: string | undefined, baseUrl = SITE_URL) {
@@ -59,7 +62,7 @@ export function trimDescription(value: string, maxLength = 155) {
     return normalized;
   }
 
-  return `${normalized.slice(0, maxLength - 1).trimEnd()}…`;
+  return `${normalized.slice(0, maxLength - 3).trimEnd()}...`;
 }
 
 export function buildCanonicalUrl({
@@ -94,7 +97,8 @@ export function buildStructuredData({
   productDetails,
   canonicalUrl,
   description,
-}: Pick<SeoProps, "pageType" | "productDetails" | "canonicalUrl" | "description">) {
+  featuredProducts,
+}: Pick<SeoProps, "pageType" | "productDetails" | "canonicalUrl" | "description" | "featuredProducts">) {
   if (pageType === "product" && productDetails) {
     const resolvedUrl = productDetails.url
       ? toAbsoluteUrl(productDetails.url)
@@ -124,6 +128,46 @@ export function buildStructuredData({
 
   const websiteUrl = buildCanonicalUrl({ canonicalUrl });
 
+  const featuredItems = featuredProducts?.length
+    ? {
+        "@type": "ItemList",
+        "@id": `${websiteUrl}#featured-products`,
+        name: `${SITE_NAME} featured products`,
+        itemListOrder: "https://schema.org/ItemListOrderAscending",
+        numberOfItems: featuredProducts.length,
+        itemListElement: featuredProducts.map((product, index) => {
+          const resolvedProductUrl = product.url
+            ? toAbsoluteUrl(product.url)
+            : `${websiteUrl}#product-${index + 1}`;
+
+          return {
+            "@type": "ListItem",
+            position: index + 1,
+            url: resolvedProductUrl,
+            item: {
+              "@type": "Product",
+              name: product.name,
+              image: [toAbsoluteUrl(product.image)],
+              description: trimDescription(product.description || description || DEFAULT_DESCRIPTION),
+              sku: product.sku ?? product.name,
+              brand: {
+                "@type": "Brand",
+                name: product.brand ?? SITE_NAME,
+              },
+              offers: {
+                "@type": "Offer",
+                url: resolvedProductUrl,
+                priceCurrency: product.currency ?? "PKR",
+                price: product.price.toFixed(2),
+                availability: `https://schema.org/${product.availability ?? "InStock"}`,
+                itemCondition: "https://schema.org/NewCondition",
+              },
+            },
+          };
+        }),
+      }
+    : null;
+
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -144,6 +188,7 @@ export function buildStructuredData({
           "@id": `${websiteUrl}#organization`,
         },
       },
+      ...(featuredItems ? [featuredItems] : []),
     ],
   };
 }

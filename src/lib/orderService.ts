@@ -33,7 +33,7 @@ export const sendOrderToSheets = async (formData: {
       date: new Date().toLocaleString()
     };
 
-    const response = await fetch(GOOGLE_SHEET_URL, {
+    await fetch(GOOGLE_SHEET_URL, {
       method: "POST",
       mode: "no-cors", // Crucial for Google Script macro triggers bypass
       headers: {

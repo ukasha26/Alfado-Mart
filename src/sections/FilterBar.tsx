@@ -6,7 +6,7 @@ export function FilterBar() {
   const setActiveCategory = useUIStore((s) => s.setActiveCategory);
 
   return (
-    <section className="bg-white border-b border-[#F3F4F6] sticky top-[60px] md:top-[72px] z-50">
+    <section className="sticky top-[92px] z-50 border-b border-[#F3F4F6] bg-white sm:top-[96px] md:top-[108px]">
       <div className="max-w-[1440px] mx-auto px-4 md:px-12">
         <div className="flex gap-0 overflow-x-auto scrollbar-hide">
           {categories.map((cat) => (

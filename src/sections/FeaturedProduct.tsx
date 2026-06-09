@@ -5,9 +5,9 @@ export function FeaturedProduct() {
   const openProductModal = useUIStore((s) => s.openProductModal);
 
   return (
-    <section id="products" className="bg-white border-t border-[#F3F4F6]">
+    <section id="featured-products" className="bg-white border-t border-[#F3F4F6]">
       <div className="max-w-[1440px] mx-auto px-4 md:px-12 py-6 md:py-10">
-        <div className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 md:gap-6 xl:grid-cols-4">
           {products.map((product) => {
             const heroImage = product.images?.[0] ?? product.image;
 
@@ -15,20 +15,27 @@ export function FeaturedProduct() {
               <article
                 key={product.id}
                 id={product.id}
-                className="rounded-2xl border border-[#F3F4F6] bg-white p-4 md:p-5"
+                className="rounded-lg border border-[#F3F4F6] bg-white p-3 md:p-4"
               >
                 <button
                   type="button"
                   onClick={() => openProductModal(product.id)}
                   className="relative w-full overflow-hidden text-left"
                 >
-                  <div className="aspect-[4/3] overflow-hidden rounded-xl border border-[#F3F4F6] bg-white flex items-center justify-center">
+                  <div className="aspect-[4/3] overflow-hidden rounded-lg border border-[#F3F4F6] bg-white flex items-center justify-center">
                     <img src={heroImage} alt={product.name} className="h-full w-full object-contain p-3" />
+
+                    {/* Discount tag (top corner) */}
+                    {product.originalPrice !== null && product.badge && (
+                      <div className="absolute top-3 left-3 px-2 py-1 text-[11px] font-medium tracking-wider bg-[#F2A93B] text-black rounded-md">
+                        <span className="whitespace-nowrap">{product.badge} OFF</span>
+                      </div>
+                    )}
                   </div>
                 </button>
 
                 <div className="mt-3">
-                  <h2 className="text-xl md:text-2xl font-semibold leading-tight text-black tracking-[-0.02em] line-clamp-2">
+                  <h2 className="line-clamp-2 text-base font-semibold leading-tight text-black md:text-xl">
                     {product.name}
                   </h2>
                 </div>

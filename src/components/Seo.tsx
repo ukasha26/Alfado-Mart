@@ -76,6 +76,7 @@ export function Seo({
   canonicalPath,
   pageType = "website",
   productDetails,
+  featuredProducts,
 }: SeoProps) {
   useEffect(() => {
     if (typeof document === "undefined") {
@@ -104,6 +105,7 @@ export function Seo({
       productDetails,
       canonicalUrl: resolvedCanonicalUrl,
       description: resolvedDescription,
+      featuredProducts,
     });
 
     const restorers = [
@@ -191,6 +193,7 @@ export function Seo({
     description,
     image,
     keywords,
+    featuredProducts,
     pageType,
     productDetails,
     title,

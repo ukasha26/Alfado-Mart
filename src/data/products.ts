@@ -6,6 +6,7 @@ export interface Product {
   description: string;
   features?: string[];
   caution?: string[];
+  keywords?: string[];
   image: string;
   images?: string[];
   category: string;
@@ -17,11 +18,19 @@ export interface Product {
 export const products: Product[] = [
   {
     id: "vegetable-cutter",
-    name: "Multi Functional Vegetable Cutter",
+    name: "3 in  1 Multi Functional Vegetable Cutter",
     price: 2490,
     originalPrice: 3599,
-    description:
-      "A fast, efficient hand powered rotary grater that quickly and easily grates, shreds and slices cheese, vegetables, biscuits, nuts and more. Featuring a wide hopper that allows substantial quantities of food to be grated or sliced in seconds and a food pusher that keeps fingers away from the blades. Three different stainless steel drum blades deliver fine grating, coarse grating/shredding and slicing. Drum blades switch out for easy cleaning. An angled dispenser reduces any clogging and a suction base securely attaches the unit to a clean, dry, non-porous surface. A reliable and durable does-it-all countertop companion.",
+    description: "3-in-1 multi-functional cutter for grating, shredding, and slicing. Suction base; easy to clean.",
+    keywords: [
+      "vegetable slicer",
+      "veg cutter",
+      "grater",
+      "shredder",
+      "kitchen cutter",
+      "manual cutter",
+      "salad cutter",
+    ],
     features: [
       "3 interchangeable stainless steel drum blades",
       "Easy-to-use hand-crank mechanism",
@@ -45,17 +54,26 @@ export const products: Product[] = [
       "/products/vegetable-cutter-8.jpeg",
     ],
     category: "kitchen",
-    badge: "DISCOUNT",
+    badge: "30.8%",
     isNew: true,
     inStock: true,
   },
   {
     id: "stainless-steel-vegetable-cutter",
-    name: "Stainless Steel Vegetable Cutter",
+    name: "5 in 1 Stainless Steel Vegetable Cutter",
     price: 1390,
     originalPrice: 2199,
     description:
-      "A durable stainless steel vegetable cutter designed for fast slicing, shredding and grating. It is built for everyday kitchen use and delivers smooth cutting performance with detachable parts for easier cleaning.",
+      "A durable 5 in 1 stainless steel vegetable cutter designed for fast slicing, shredding and grating. It is built for everyday kitchen use and delivers smooth cutting performance with detachable parts for easier cleaning.",
+    keywords: [
+      "vegetable slicer",
+      "veg cutter",
+      "stainless cutter",
+      "grater",
+      "shredder",
+      "kitchen cutter",
+      "manual cutter",
+    ],
     features: [
       "Stainless steel cutting blades",
       "Fast slicing and shredding performance",
@@ -78,7 +96,7 @@ export const products: Product[] = [
       "/products/stainless-steel-cutter-8.jpeg",
     ],
     category: "kitchen",
-    badge: "DISCOUNT",
+    badge: "36.8%",
     isNew: true,
     inStock: true,
   },

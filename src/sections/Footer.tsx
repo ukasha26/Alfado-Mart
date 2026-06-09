@@ -22,7 +22,7 @@ export function Footer() {
             <div className="mt-3 flex flex-col gap-2 text-sm text-[#2A2A2A]">
               <a
                 href="mailto:alfadomart2003@gmail.com"
-                className="inline-flex items-center gap-2 hover:text-black transition-colors"
+                className="inline-flex min-w-0 items-center gap-2 break-all transition-colors hover:text-black"
               >
                 <Mail size={16} />
                 alfadomart2003@gmail.com

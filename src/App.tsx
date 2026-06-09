@@ -2,8 +2,11 @@ import { Analytics } from '@vercel/analytics/react';
 import { lazy, Suspense } from "react";
 import { Navbar } from "@/sections/Navbar";
 import { HeroBanner } from "@/sections/HeroBanner";
-import { FeaturedProduct } from "./sections/FeaturedProduct.tsx";
+import { FeaturedProduct } from "@/sections/FeaturedProduct";
+import { FilterBar } from "@/sections/FilterBar";
+import { ProductGrid } from "@/sections/ProductGrid";
 import { Seo } from "@/components/Seo";
+import { products } from "@/data/products";
 import {
   DEFAULT_DESCRIPTION,
   DEFAULT_IMAGE_PATH,
@@ -29,8 +32,20 @@ const Footer = lazy(() =>
 );
 
 function App() {
+  const featuredProducts = products.map((product) => ({
+    name: product.name,
+    description: product.description,
+    image: product.image,
+    price: product.price,
+    currency: "PKR" as const,
+    availability: product.inStock ? ("InStock" as const) : ("OutOfStock" as const),
+    sku: product.id,
+    brand: "Alfado Mart",
+    url: `${SITE_URL}/#${product.id}`,
+  }));
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen overflow-x-hidden bg-white">
       <Seo
         title={DEFAULT_TITLE}
         description={DEFAULT_DESCRIPTION}
@@ -38,14 +53,15 @@ function App() {
         canonicalUrl={SITE_URL}
         image={DEFAULT_IMAGE_PATH}
         pageType="website"
+        featuredProducts={featuredProducts}
       />
       <Navbar />
-      {/* Site banner uploaded to public/Banner.png — full-width hero below navbar */}
-      <div className="w-full relative bg-black overflow-hidden">
+      {/* Site banner uploaded to public/Banner.png. */}
+      <div className="relative w-full overflow-hidden bg-black">
         <img
           src="/Banner.png"
           alt="Site banner"
-          className="block w-full h-auto max-h-[240px] sm:max-h-[320px] md:h-[420px] md:max-h-none object-contain md:object-cover md:object-center"
+          className="block h-auto max-h-[220px] w-full object-contain sm:max-h-[320px] md:h-[420px] md:max-h-none md:object-cover md:object-center"
         />
         {/* subtle dark overlay for text contrast */}
         <div className="absolute inset-0 bg-black/30 pointer-events-none" />
@@ -53,6 +69,8 @@ function App() {
       <main>
         <HeroBanner />
         <FeaturedProduct />
+        <FilterBar />
+        <ProductGrid />
       </main>
       <Suspense fallback={<div className="h-24 bg-white" />}>
         <Footer />
@@ -62,7 +80,7 @@ function App() {
         target="_blank"
         rel="noreferrer"
         aria-label="Chat with us on WhatsApp"
-        className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-[600] inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-white shadow-lg shadow-black/20 transition-transform duration-200 hover:scale-[1.03] active:scale-[0.98]"
+        className="fixed bottom-3 right-3 z-[600] inline-flex max-w-[calc(100vw-1.5rem)] items-center gap-2 rounded-full bg-[#25D366] px-3 py-3 text-white shadow-lg shadow-black/20 transition-transform duration-200 hover:scale-[1.03] active:scale-[0.98] md:bottom-6 md:right-6 md:px-4"
       >
         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15">
           <svg viewBox="0 0 32 32" className="h-5 w-5 fill-current" aria-hidden="true">

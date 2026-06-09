@@ -29,11 +29,11 @@ export function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-            className="fixed top-0 right-0 h-full bg-white shadow-[-4px_0_24px_rgba(0,0,0,0.08)] flex flex-col"
+            className="fixed right-0 top-0 flex h-[100dvh] flex-col bg-white shadow-[-4px_0_24px_rgba(0,0,0,0.08)]"
             style={{ zIndex: 300, width: "100vw", maxWidth: 420 }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#F3F4F6]">
+            <div className="flex items-center justify-between border-b border-[#F3F4F6] px-4 py-4 md:px-6">
               <h2 className="text-base font-semibold tracking-wide">
                 YOUR CART
               </h2>
@@ -47,7 +47,7 @@ export function CartDrawer() {
             </div>
 
             {/* Cart Items */}
-            <div className="flex-1 overflow-y-auto px-6 py-4">
+            <div className="flex-1 overflow-y-auto px-4 py-4 md:px-6">
               {items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center">
                   <ShoppingBag size={48} className="text-[#F3F4F6] mb-4" />
@@ -74,10 +74,10 @@ export function CartDrawer() {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 20 }}
                       transition={{ duration: 0.3 }}
-                      className="flex gap-4 py-4 border-b border-[#F3F4F6]"
+                      className="flex gap-3 border-b border-[#F3F4F6] py-4 md:gap-4"
                     >
                       {/* Product Image */}
-                      <div className="w-20 h-20 flex-shrink-0 border border-[#F3F4F6] overflow-hidden">
+                      <div className="h-16 w-16 flex-shrink-0 overflow-hidden border border-[#F3F4F6] min-[380px]:h-20 min-[380px]:w-20">
                         <img
                           src={item.product.image}
                           alt={item.product.name}
@@ -122,7 +122,7 @@ export function CartDrawer() {
 
             {/* Footer */}
             {items.length > 0 && (
-              <div className="px-6 py-4 border-t border-[#F3F4F6] bg-white">
+              <div className="border-t border-[#F3F4F6] bg-white px-4 py-4 md:px-6">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm text-[#2A2A2A]">Subtotal</span>
                   <span className="text-lg font-semibold text-black">

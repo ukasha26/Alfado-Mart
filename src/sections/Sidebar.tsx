@@ -30,7 +30,7 @@ export function Sidebar() {
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-            className="fixed top-0 left-0 h-full bg-white shadow-lg"
+            className="fixed left-0 top-0 h-[100dvh] bg-white shadow-lg"
             style={{ zIndex: 200, width: "85vw", maxWidth: 360 }}
           >
             <div className="flex flex-col h-full p-6">

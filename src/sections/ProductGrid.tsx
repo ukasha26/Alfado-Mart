@@ -2,15 +2,20 @@ import { products } from "@/data/products";
 import { useUIStore } from "@/stores/uiStore";
 import { ProductCard } from "@/components/ProductCard";
 import { useMemo } from "react";
+import { searchProducts } from "@/lib/productSearch";
 
 export function ProductGrid() {
   const activeCategory = useUIStore((s) => s.activeCategory);
   const searchQuery = useUIStore((s) => s.searchQuery);
 
   const filteredProducts = useMemo(() => {
-    let result = [...products];
+    const trimmedSearch = searchQuery.trim();
+    let result = trimmedSearch ? searchProducts(products, trimmedSearch) : [...products];
 
-    // Category filter
+    if (trimmedSearch) {
+      return result;
+    }
+
     if (activeCategory === "new-arrivals") {
       result = result.filter((p) => p.isNew);
     } else if (activeCategory === "bestsellers") {
@@ -20,17 +25,6 @@ export function ProductGrid() {
     } else if (activeCategory !== "all") {
       result = result.filter(
         (p) => p.category.toLowerCase() === activeCategory.toLowerCase()
-      );
-    }
-
-    // Search filter
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.description.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q)
       );
     }
 
@@ -50,7 +44,7 @@ export function ProductGrid() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
+          <div className="grid grid-cols-1 gap-3 min-[480px]:grid-cols-2 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-6">
             {filteredProducts.map((product, index) => (
               <ProductCard key={product.id} product={product} index={index} />
             ))}

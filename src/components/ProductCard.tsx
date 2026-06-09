@@ -40,7 +40,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
         delay: index * 0.05,
         ease: [0.4, 0, 0.2, 1],
       }}
-      className="group cursor-pointer border border-[#F3F4F6] bg-white transition-colors duration-300 hover:border-black"
+      className="group min-w-0 cursor-pointer border border-[#F3F4F6] bg-white transition-colors duration-300 hover:border-black"
       onClick={handleClick}
     >
       {/* Image Container */}
@@ -84,12 +84,12 @@ export function ProductCard({ product, index }: ProductCardProps) {
         <h3 className="text-sm md:text-base font-medium text-black line-clamp-2 leading-snug">
           {product.name}
         </h3>
-        <div className="flex items-center gap-2 mt-2">
+        <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-1">
           <span className="text-base md:text-lg font-semibold text-black">
             {formatPrice(product.price)}
           </span>
           {product.originalPrice && (
-            <span className="text-sm md:text-base text-[#2A2A2A] line-through">
+            <span className="text-sm md:text-base font-bold text-red-600 line-through decoration-red-500 decoration-2">
               {formatPrice(product.originalPrice)}
             </span>
           )}

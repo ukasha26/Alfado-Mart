@@ -14,6 +14,12 @@ import { SITE_URL, type SeoProductDetails } from "@/lib/seo";
 import { sendOrderToSheets } from "@/lib/orderService";
 import { formatDiscountPercentage } from "@/lib/pricing";
 
+declare global {
+  interface Window {
+    fbq?: (event: string, name: string, params?: Record<string, unknown>) => void;
+  }
+}
+
 interface FormData {
   fullName: string;
   phone: string;
@@ -73,8 +79,8 @@ export function ProductModal() {
 
   const galleryImages = product?.images?.length ? product.images : product ? [product.image] : [];
   const discountLabel = product?.originalPrice
-    ? `Discount ${formatDiscountPercentage(product.originalPrice, product.price)}`
-    : "Discount";
+    ? formatDiscountPercentage(product.originalPrice, product.price)
+    : "";
 
   const formatPrice = (price: number) => `Rs. ${price.toLocaleString("en-PK")}`;
 
@@ -171,12 +177,6 @@ export function ProductModal() {
 
     // Generate order ID
     const generatedOrderId = `AM-${Date.now().toString(36).toUpperCase()}`;
-    const formattedDate = new Intl.DateTimeFormat("en-GB", {
-      dateStyle: "short",
-      timeStyle: "short",
-      timeZone: "Asia/Karachi",
-    }).format(new Date());
-
     try {
       await sendOrderToSheets({
         fullName: formData.fullName.trim(),
@@ -194,8 +194,8 @@ export function ProductModal() {
       // Since no-cors doesn't return readable response, we assume success
       setOrderId(generatedOrderId);
       setOrderSuccess(true);
-      if ((window as any).fbq) {
-        (window as any).fbq("track", "Purchase", {
+      if (window.fbq) {
+        window.fbq("track", "Purchase", {
           value: orderSummaryTotal,
           currency: "PKR",
         });
@@ -263,15 +263,15 @@ export function ProductModal() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: "100%", scale: 0.95 }}
             transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-            className="fixed inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center bg-white md:bg-transparent overflow-y-auto"
+            className="fixed inset-x-0 bottom-0 h-[100dvh] overflow-y-auto bg-white md:inset-0 md:flex md:h-auto md:items-center md:justify-center md:bg-transparent"
             style={{ zIndex: 300 }}
             ref={modalScrollRef}
           >
-            <div className="bg-white w-full md:max-w-[1200px] max-h-[90vh] overflow-y-auto relative">
+            <div className="relative h-full w-full overflow-y-auto bg-white md:h-auto md:max-h-[90vh] md:max-w-[1200px]">
               {/* Close Button */}
               <button
                 onClick={handleClose}
-                className="absolute top-4 right-4 z-10 p-2 text-[#2A2A2A] hover:text-black transition-colors duration-150 bg-white/80"
+                className="absolute right-3 top-3 z-10 bg-white/90 p-2 text-[#2A2A2A] transition-colors duration-150 hover:text-black md:right-4 md:top-4"
                 aria-label="Close"
               >
                 <X size={24} />
@@ -293,17 +293,17 @@ export function ProductModal() {
                   </div>
 
                   {/* Details */}
-                  <div className="p-6 md:p-12">
+                  <div className="p-4 pt-6 md:p-12">
                     <h2 className="text-xl md:text-2xl font-semibold text-black tracking-[-0.01em]">
                       {product.name}
                     </h2>
 
-                    <div className="flex items-center gap-3 mt-3">
+                    <div className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                       <span className="text-lg md:text-xl font-semibold text-black">
                         {formatPrice(product.price)}
                       </span>
                       {product.originalPrice && (
-                        <span className="text-base text-[#2A2A2A] line-through">
+                        <span className="text-base font-bold text-red-600 line-through decoration-red-500 decoration-2">
                           {formatPrice(product.originalPrice)}
                         </span>
                       )}
@@ -313,7 +313,7 @@ export function ProductModal() {
                       {product.description}
                     </p>
 
-                    <div className="mt-5 space-y-4 rounded-2xl border border-[#F3F4F6] bg-white p-4">
+                    <div className="mt-5 space-y-4 rounded-lg border border-[#F3F4F6] bg-white p-4">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-black">
                           Features
@@ -347,7 +347,7 @@ export function ProductModal() {
                       Cash On Delivery
                     </div>
 
-                    <div className="mt-5 rounded-xl border border-[#F3F4F6] bg-[#FAFAFA] p-4">
+                    <div className="mt-5 rounded-lg border border-[#F3F4F6] bg-[#FAFAFA] p-4">
                       <p className="text-xs font-medium uppercase tracking-wider text-[#2A2A2A]">
                         Selected Product
                       </p>
@@ -432,10 +432,10 @@ export function ProductModal() {
                 </div>
               ) : (
                 /* Checkout Form View */
-                <div className="max-w-[640px] mx-auto p-6 md:p-12">
+                <div className="mx-auto max-w-[640px] p-4 pt-12 md:p-12">
                   {/* Compact Product Preview for mobile/checkout */}
                   {product && (
-                    <div className="mb-4 flex items-center gap-4">
+                    <div className="mb-4 flex items-center gap-3">
                       <div className="w-20 h-20 flex-shrink-0 border border-[#F3F4F6] overflow-hidden rounded flex items-center justify-center bg-white">
                         <img
                           src={product.image}
@@ -449,7 +449,7 @@ export function ProductModal() {
                         </p>
                         <p className="text-xs text-[#6b7280] mt-1">Qty {quantity}</p>
                       </div>
-                      <div className="text-sm font-semibold text-black">
+                      <div className="shrink-0 text-sm font-semibold text-black">
                         {formatPrice(product.price * quantity)}
                       </div>
                     </div>
@@ -500,7 +500,7 @@ export function ProductModal() {
                     </div>
                   )}
 
-                  <div className="mb-6 rounded-xl border border-black/10 bg-black/5 p-4">
+                  <div className="mb-6 rounded-lg border border-black/10 bg-black/5 p-4">
                     <p className="text-xs font-medium uppercase tracking-wider text-[#2A2A2A]">
                       Payment Method
                     </p>
