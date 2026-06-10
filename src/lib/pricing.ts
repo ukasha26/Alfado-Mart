@@ -7,5 +7,5 @@ export function getDiscountPercentage(originalPrice: number, price: number) {
 }
 
 export function formatDiscountPercentage(originalPrice: number, price: number) {
-  return `${getDiscountPercentage(originalPrice, price).toFixed(1)}%`;
+  return `${Math.round(getDiscountPercentage(originalPrice, price))}%`;
 }
