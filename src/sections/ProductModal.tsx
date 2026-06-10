@@ -311,60 +311,6 @@ export function ProductModal() {
                       {product.name}
                     </h2>
 
-                    <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                      <motion.button
-                        onClick={handleAddToCart}
-                        whileHover={{ y: -2, scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        animate={{
-                          boxShadow: [
-                            "0 10px 24px rgba(0, 0, 0, 0.14)",
-                            "0 16px 34px rgba(242, 169, 59, 0.28)",
-                            "0 10px 24px rgba(0, 0, 0, 0.14)",
-                          ],
-                        }}
-                        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-                        className="group relative inline-flex min-h-14 w-full overflow-hidden bg-black px-4 py-4 text-sm font-semibold tracking-wider text-white transition-colors duration-200 hover:bg-[#2A2A2A]"
-                        type="button"
-                      >
-                        <span className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 skew-x-[-20deg] bg-white/20 transition-transform duration-700 group-hover:translate-x-[320%]" />
-                        <span className="relative flex w-full items-center justify-center gap-2">
-                          <ShoppingCart size={17} />
-                          ADD TO CART
-                        </span>
-                      </motion.button>
-                      <motion.button
-                        onClick={handleBuyNow}
-                        whileHover={{ y: -2, scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        animate={{
-                          boxShadow: [
-                            "0 10px 24px rgba(242, 169, 59, 0.18)",
-                            "0 18px 38px rgba(0, 0, 0, 0.18)",
-                            "0 10px 24px rgba(242, 169, 59, 0.18)",
-                          ],
-                        }}
-                        transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-                        className="group relative inline-flex min-h-14 w-full overflow-hidden border border-black bg-[#F2A93B] px-4 py-4 text-sm font-semibold tracking-wider text-black transition-colors duration-200 hover:bg-[#f5b957]"
-                        type="button"
-                      >
-                        <span className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 skew-x-[-20deg] bg-white/35 transition-transform duration-700 group-hover:translate-x-[320%]" />
-                        <span className="relative flex w-full items-center justify-center gap-2">
-                          <Zap size={17} />
-                          BUY NOW
-                        </span>
-                      </motion.button>
-                      <a
-                        href={getWhatsAppOrderUrl()}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex min-h-14 w-full items-center justify-center gap-2 border border-[#25D366] bg-white px-4 py-4 text-xs font-semibold tracking-wider text-[#128C4A] shadow-[0_10px_24px_rgba(37,211,102,0.14)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#25D366] hover:text-white hover:shadow-[0_16px_34px_rgba(37,211,102,0.24)] active:scale-[0.98] md:text-[13px]"
-                      >
-                        <MessageCircle size={17} />
-                        ORDER ON WHATSAPP
-                      </a>
-                    </div>
-
                     <div className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                       <span className="text-lg md:text-xl font-semibold text-black">
                         {formatPrice(product.price)}
@@ -409,6 +355,62 @@ export function ProductModal() {
                           onChange={setQuantity}
                         />
                       </div>
+                    </div>
+
+                    <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                      <motion.button
+                        onClick={handleAddToCart}
+                        whileHover={{ y: -2, scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        animate={{
+                          boxShadow: [
+                            "0 10px 24px rgba(0, 0, 0, 0.14)",
+                            "0 16px 34px rgba(242, 169, 59, 0.28)",
+                            "0 10px 24px rgba(0, 0, 0, 0.14)",
+                          ],
+                        }}
+                        transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+                        className="group relative inline-flex min-h-14 w-full overflow-hidden bg-black px-4 py-4 text-sm font-semibold tracking-wider text-white transition-colors duration-200 hover:bg-[#2A2A2A]"
+                        type="button"
+                      >
+                        <span className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 skew-x-[-20deg] bg-white/20 transition-transform duration-700 group-hover:translate-x-[320%]" />
+                        <span className="relative flex w-full items-center justify-center gap-2">
+                          <ShoppingCart size={17} />
+                          ADD TO CART
+                        </span>
+                      </motion.button>
+
+                      <motion.button
+                        onClick={handleBuyNow}
+                        whileHover={{ y: -2, scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        animate={{
+                          boxShadow: [
+                            "0 10px 24px rgba(242, 169, 59, 0.18)",
+                            "0 18px 38px rgba(0, 0, 0, 0.18)",
+                            "0 10px 24px rgba(242, 169, 59, 0.18)",
+                          ],
+                        }}
+                        transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                        className="group relative inline-flex min-h-14 w-full overflow-hidden border border-black bg-[#F2A93B] px-4 py-4 text-sm font-semibold tracking-wider text-black transition-colors duration-200 hover:bg-[#f5b957]"
+                        type="button"
+                      >
+                        <span className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 skew-x-[-20deg] bg-white/35 transition-transform duration-700 group-hover:translate-x-[320%]" />
+                        <span className="relative flex w-full items-center justify-center gap-2">
+                          <Zap size={17} />
+                          BUY NOW
+                        </span>
+                      </motion.button>
+
+                      <a
+                        href={getWhatsAppOrderUrl()}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex min-h-14 w-full items-center justify-center gap-2 border border-[#25D366] bg-white px-4 py-4 text-xs font-semibold tracking-wider text-[#128C4A] shadow-[0_10px_24px_rgba(37,211,102,0.14)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#25D366] hover:text-white hover:shadow-[0_16px_34px_rgba(37,211,102,0.24)] active:scale-[0.98] md:text-[13px]"
+                      >
+                        <MessageCircle size={17} />
+                        ORDER ON WHATSAPP
+                      </a>
                     </div>
 
                     <p className="mt-6 text-sm leading-relaxed text-[#2A2A2A]">
