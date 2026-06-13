@@ -98,12 +98,17 @@ function App() {
 
       <Navbar />
 
-      {/* Sync modal state with /product/:id deep-links early in the lifecycle */}
-      <ProductRoute />
-
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/product/:id" element={<HomePage />} />
+        <Route
+          path="/product/:id"
+          element={
+            <>
+              <ProductRoute />
+              <HomePage />
+            </>
+          }
+        />
       </Routes>
 
       <Analytics />
