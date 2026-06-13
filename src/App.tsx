@@ -1,7 +1,7 @@
 import { Analytics } from "@vercel/analytics/react";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { Navbar } from "@/sections/Navbar";
 import { HeroBanner } from "@/sections/HeroBanner";
 import { FeaturedProduct } from "@/sections/FeaturedProduct";
@@ -23,8 +23,20 @@ import { ProductModal } from "@/sections/ProductModal";
 import { ToastContainer } from "@/components/Toast";
 import { Footer } from "@/sections/Footer";
 import { Sidebar } from "@/sections/Sidebar";
+import { useUIStore } from "@/stores/uiStore";
 
 function HomePage() {
+  const { pathname } = useLocation();
+  const closeProductModal = useUIStore((s) => s.closeProductModal);
+  const productModalOpen = useUIStore((s) => s.productModalOpen);
+
+  // Handle closing modal when navigating back to home (e.g. browser back button)
+  useEffect(() => {
+    if (pathname === "/" && productModalOpen) {
+      closeProductModal();
+    }
+  }, [pathname, productModalOpen, closeProductModal]);
+
   return (
     <>
       <div className="relative w-full overflow-hidden bg-black">
