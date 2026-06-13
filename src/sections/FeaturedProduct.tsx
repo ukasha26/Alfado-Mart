@@ -1,9 +1,7 @@
 import { products } from "@/data/products";
-import { useUIStore } from "@/stores/uiStore";
+import { Link } from "react-router-dom";
 
 export function FeaturedProduct() {
-  const openProductModal = useUIStore((s) => s.openProductModal);
-
   return (
     <section id="featured-products" className="bg-white border-t border-[#F3F4F6]">
       <div className="max-w-[1440px] mx-auto px-4 md:px-12 py-6 md:py-10">
@@ -17,13 +15,18 @@ export function FeaturedProduct() {
                 id={product.id}
                 className="rounded-lg border border-[#F3F4F6] bg-white p-3 md:p-4"
               >
-                <button
-                  type="button"
-                  onClick={() => openProductModal(product.id)}
+                <Link
+                  to={`/product/${product.id}`}
                   className="relative w-full overflow-hidden text-left"
+                  style={{ textDecoration: "none" }}
+                  aria-label={`Open ${product.name}`}
                 >
                   <div className="aspect-[4/3] overflow-hidden rounded-lg border border-[#F3F4F6] bg-white flex items-center justify-center">
-                    <img src={heroImage} alt={product.name} className="h-full w-full object-contain p-3" />
+                    <img
+                      src={heroImage}
+                      alt={product.name}
+                      className="h-full w-full object-contain p-3"
+                    />
 
                     {/* Discount tag (top corner) */}
                     {product.originalPrice !== null && product.badge && (
@@ -32,7 +35,7 @@ export function FeaturedProduct() {
                       </div>
                     )}
                   </div>
-                </button>
+                </Link>
 
                 <div className="mt-3">
                   <h2 className="line-clamp-2 text-base font-semibold leading-tight text-black md:text-xl">
@@ -47,3 +50,4 @@ export function FeaturedProduct() {
     </section>
   );
 }
+

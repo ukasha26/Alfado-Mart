@@ -1,5 +1,7 @@
-import { Analytics } from '@vercel/analytics/react';
-import { lazy, Suspense } from "react";
+import { Analytics } from "@vercel/analytics/react";
+import { Suspense } from "react";
+
+import { Routes, Route } from "react-router-dom";
 import { Navbar } from "@/sections/Navbar";
 import { HeroBanner } from "@/sections/HeroBanner";
 import { FeaturedProduct } from "@/sections/FeaturedProduct";
@@ -14,67 +16,37 @@ import {
   DEFAULT_TITLE,
   SITE_URL,
 } from "@/lib/seo";
+import { ProductRoute } from "@/pages/ProductRoute";
 
-const Sidebar = lazy(() =>
-  import("@/sections/Sidebar").then((module) => ({ default: module.Sidebar }))
-);
-const CartDrawer = lazy(() =>
-  import("@/sections/CartDrawer").then((module) => ({ default: module.CartDrawer }))
-);
-const ProductModal = lazy(() =>
-  import("@/sections/ProductModal").then((module) => ({ default: module.ProductModal }))
-);
-const ToastContainer = lazy(() =>
-  import("@/components/Toast").then((module) => ({ default: module.ToastContainer }))
-);
-const Footer = lazy(() =>
-  import("@/sections/Footer").then((module) => ({ default: module.Footer }))
-);
+import { CartDrawer } from "@/sections/CartDrawer";
+import { ProductModal } from "@/sections/ProductModal";
+import { ToastContainer } from "@/components/Toast";
+import { Footer } from "@/sections/Footer";
+import { Sidebar } from "@/sections/Sidebar";
 
-function App() {
-  const featuredProducts = products.map((product) => ({
-    name: product.name,
-    description: product.description,
-    image: product.image,
-    price: product.price,
-    currency: "PKR" as const,
-    availability: product.inStock ? ("InStock" as const) : ("OutOfStock" as const),
-    sku: product.id,
-    brand: "Alfado Mart",
-    url: `${SITE_URL}/#${product.id}`,
-  }));
-
+function HomePage() {
   return (
-    <div className="min-h-screen overflow-x-hidden bg-white">
-      <Seo
-        title={DEFAULT_TITLE}
-        description={DEFAULT_DESCRIPTION}
-        keywords={DEFAULT_KEYWORDS}
-        canonicalUrl={SITE_URL}
-        image={DEFAULT_IMAGE_PATH}
-        pageType="website"
-        featuredProducts={featuredProducts}
-      />
-      <Navbar />
-      {/* Site banner uploaded to public/Banner.png. */}
+    <>
       <div className="relative w-full overflow-hidden bg-black">
         <img
           src="/Banner.png"
           alt="Site banner"
           className="block h-auto max-h-[220px] w-full object-contain sm:max-h-[320px] md:h-[420px] md:max-h-none md:object-cover md:object-center"
         />
-        {/* subtle dark overlay for text contrast */}
         <div className="absolute inset-0 bg-black/30 pointer-events-none" />
       </div>
+
       <main>
         <HeroBanner />
         <FeaturedProduct />
         <FilterBar />
         <ProductGrid />
       </main>
+
       <Suspense fallback={<div className="h-24 bg-white" />}>
         <Footer />
       </Suspense>
+
       <a
         href="https://wa.me/923346605354?text=Hello%20Alfado%20Mart%2C%20I%20need%20help%20with%20my%20order."
         target="_blank"
@@ -88,15 +60,59 @@ function App() {
           </svg>
         </span>
       </a>
+
       <Suspense fallback={null}>
         <Sidebar />
         <CartDrawer />
         <ProductModal />
         <ToastContainer />
       </Suspense>
+    </>
+  );
+}
+
+function App() {
+  const featuredProducts = products.map((product) => ({
+    name: product.name,
+    description: product.description,
+    image: product.image,
+    price: product.price,
+    currency: "PKR" as const,
+    availability: product.inStock ? ("InStock" as const) : ("OutOfStock" as const),
+    sku: product.id,
+    brand: "Alfado Mart",
+    url: `${SITE_URL}/product/${product.id}`,
+  }));
+
+  return (
+    <div className="min-h-screen overflow-x-hidden bg-white">
+      <Seo
+        title={DEFAULT_TITLE}
+        description={DEFAULT_DESCRIPTION}
+        keywords={DEFAULT_KEYWORDS}
+        canonicalUrl={SITE_URL}
+        image={DEFAULT_IMAGE_PATH}
+        pageType="website"
+        featuredProducts={featuredProducts}
+      />
+
+      <Navbar />
+
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/product/:id" element={<HomePage />} />
+      </Routes>
+
+      <Suspense fallback={null}>
+        {/* Sync modal state with /product/:id deep-links */}
+        <ProductRoute />
+      </Suspense>
+
+
       <Analytics />
     </div>
   );
 }
 
 export default App;
+
