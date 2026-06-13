@@ -109,6 +109,7 @@ export function ProductModal() {
 
     // If the modal was opened via a deep-link (/product/:id), return to homepage.
     if (window.location.pathname.startsWith("/product/")) {
+      window.history.pushState(null, "", "/");
       navigate("/", { replace: true });
     }
   };

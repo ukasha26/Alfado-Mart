@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useCartStore } from "@/stores/cartStore";
 import { useToastStore } from "@/stores/toastStore";
+import { useUIStore } from "@/stores/uiStore";
 import type { Product } from "@/data/products";
 
 interface ProductCardProps {
@@ -25,6 +26,16 @@ export function ProductCard({ product, index }: ProductCardProps) {
     return `Rs. ${price.toLocaleString("en-PK")}`;
   };
 
+  const openProductModal = useUIStore((s) => s.openProductModal);
+
+  const handleProductClick = (e: React.MouseEvent) => {
+    // Avoid navigation; we only want to update URL + open modal.
+    e.preventDefault();
+
+    openProductModal(product.id);
+    window.history.pushState(null, "", `/product/${product.id}`);
+  };
+
   return (
     <Link
       to={`/product/${product.id}`}
@@ -32,7 +43,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
       style={{ textDecoration: "none" }}
       aria-label={`Open ${product.name}`}
     >
-      <motion.div
+      <motion.div onClick={handleProductClick}
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-50px" }}

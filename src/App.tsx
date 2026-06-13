@@ -1,5 +1,5 @@
 import { Analytics } from "@vercel/analytics/react";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useMemo } from "react";
 
 import { Routes, Route, useLocation } from "react-router-dom";
 import { Navbar } from "@/sections/Navbar";
@@ -84,6 +84,23 @@ function HomePage() {
 }
 
 function App() {
+  const openProductModal = useUIStore((s) => s.openProductModal);
+
+  // Handle direct deep-links on initial mount (e.g. from Meta Ads)
+  // so the modal opens without a blank screen.
+  useEffect(() => {
+    const pathname = window.location.pathname;
+    if (!pathname.startsWith("/product/")) return;
+
+    const slug = pathname.replace("/product/", "").split("/")[0];
+    if (!slug) return;
+
+    const product = products.find((p) => p.id === slug);
+    if (!product) return;
+
+    openProductModal(product.id);
+  }, [openProductModal]);
+
   const featuredProducts = products.map((product) => ({
     name: product.name,
     description: product.description,
