@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Menu, Search, ShoppingCart, X } from "lucide-react";
 import { useUIStore } from "@/stores/uiStore";
 import { useCartStore } from "@/stores/cartStore";
@@ -6,12 +7,12 @@ import { products } from "@/data/products";
 import { searchProducts } from "@/lib/productSearch";
 
 export function Navbar() {
+  const navigate = useNavigate();
   const toggleSidebar = useUIStore((s) => s.toggleSidebar);
   const toggleCart = useCartStore((s) => s.toggleCart);
   const totalItems = useCartStore((s) => s.totalItems);
   const searchQuery = useUIStore((s) => s.searchQuery);
   const setSearchQuery = useUIStore((s) => s.setSearchQuery);
-  const openProductModal = useUIStore((s) => s.openProductModal);
 
   const [searchFocused, setSearchFocused] = useState(false);
   const [isSticky, setIsSticky] = useState(false);
@@ -70,12 +71,12 @@ export function Navbar() {
               <Menu size={20} />
             </button>
 
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            <Link
+              to="/"
               className="font-logo truncate text-lg leading-none text-black transition-opacity hover:opacity-80 min-[380px]:text-xl md:text-[30px]"
             >
               ALFADO MART.
-            </button>
+            </Link>
           </div>
 
           {/* Center: Search Bar */}
@@ -173,7 +174,7 @@ export function Navbar() {
                         key={product.id}
                         type="button"
                         onClick={() => {
-                          openProductModal(product.id);
+                          navigate(`/product/${product.id}`);
                           closeMobileSearch();
                         }}
                         className="flex w-full items-center gap-3 py-3 text-left"

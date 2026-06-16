@@ -102,6 +102,10 @@ export const products: Product[] = [
   },
 ];
 
+export function getProductBySlug(slug: string): Product | undefined {
+  return products.find((product) => product.id === slug);
+}
+
 export const categories = [
   { id: "all", name: "ALL" },
   { id: "kitchen", name: "KITCHEN" },

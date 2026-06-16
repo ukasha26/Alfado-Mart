@@ -2,18 +2,16 @@ import { create } from "zustand";
 
 interface UIState {
   sidebarOpen: boolean;
-  productModalOpen: boolean;
-  selectedProductId: string | null;
+  checkoutModalOpen: boolean;
   checkoutRequested: boolean;
   activeCategory: string;
   searchQuery: string;
   announcementVisible: boolean;
   toggleSidebar: () => void;
   closeSidebar: () => void;
-  openProductModal: (productId: string) => void;
   openCheckout: () => void;
   clearCheckout: () => void;
-  closeProductModal: () => void;
+  closeCheckoutModal: () => void;
   setActiveCategory: (cat: string) => void;
   setSearchQuery: (q: string) => void;
   dismissAnnouncement: () => void;
@@ -21,8 +19,7 @@ interface UIState {
 
 export const useUIStore = create<UIState>((set) => ({
   sidebarOpen: false,
-  productModalOpen: false,
-  selectedProductId: null,
+  checkoutModalOpen: false,
   checkoutRequested: false,
   activeCategory: "all",
   searchQuery: "",
@@ -32,23 +29,15 @@ export const useUIStore = create<UIState>((set) => ({
     set((s) => ({ sidebarOpen: !s.sidebarOpen, cartOpen: false })),
   closeSidebar: () => set({ sidebarOpen: false }),
 
-  openProductModal: (productId) =>
-    set({
-      productModalOpen: true,
-      selectedProductId: productId,
-      checkoutRequested: false,
-      sidebarOpen: false,
-    }),
   openCheckout: () =>
     set({
-      productModalOpen: true,
-      selectedProductId: null,
+      checkoutModalOpen: true,
       checkoutRequested: true,
       sidebarOpen: false,
     }),
   clearCheckout: () => set({ checkoutRequested: false }),
-  closeProductModal: () =>
-    set({ productModalOpen: false, selectedProductId: null, checkoutRequested: false }),
+  closeCheckoutModal: () =>
+    set({ checkoutModalOpen: false, checkoutRequested: false }),
 
   setActiveCategory: (cat) => set({ activeCategory: cat }),
   setSearchQuery: (q) => set({ searchQuery: q }),
