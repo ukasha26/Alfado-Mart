@@ -13,6 +13,7 @@ export interface Product {
   badge: string | null;
   isNew: boolean;
   inStock: boolean;
+  hasTieredDiscount?: boolean;
 }
 
 export const products: Product[] = [
@@ -100,6 +101,133 @@ export const products: Product[] = [
     isNew: true,
     inStock: true,
   },
+  {
+    id: "health-healer-night-cream",
+    name: "The Health Healer Night Cream: Renew and Refresh Your Skin",
+    price: 799,
+    originalPrice: 1598,
+    description:
+      "Overnight renewal night cream that deeply hydrates, brightens dull skin, and helps reduce fine lines while you sleep. Lightweight, non-greasy formula suitable for daily use.",
+    keywords: [
+      "night cream",
+      "skin renewal",
+      "anti aging cream",
+      "face cream Pakistan",
+      "hydrating night cream",
+      "Health Healer",
+    ],
+    features: [
+      "Deep overnight hydration for softer, smoother skin",
+      "Helps reduce the appearance of fine lines and dullness",
+      "Lightweight, non-greasy formula absorbs quickly",
+      "Suitable for nightly use on all skin types",
+      "Dermatologically tested ingredients",
+    ],
+    caution: [
+      "For external use only. Avoid contact with eyes.",
+      "Patch test before first use if you have sensitive skin.",
+    ],
+    image: "/products/cream1.jpeg",
+    images: [
+      "/products/cream1.jpeg",
+      "/products/cream2.jpeg",
+      "/products/cream3.jpeg",
+      "/products/cream4.jpeg",
+      "/products/cream5.jpeg",
+      "/products/cream6.png",
+      "/products/cream7.png",
+      "/products/cream8.png",
+    ],
+    category: "beauty",
+    badge: "50%",
+    isNew: true,
+    inStock: true,
+    hasTieredDiscount: true,
+  },
+  {
+    id: "bare-anatomy-rosemary-spray",
+    name: "Bare Anatomy Rosemary Water Spray for Hair Growth & Hair Fall Control - With Rice Water & 100% Natural Extracts - 200ml",
+    price: 899,
+    originalPrice: 1798,
+    description:
+      "Rosemary water hair spray enriched with rice water and 100% natural extracts to support hair growth, reduce hair fall, and refresh the scalp. 200ml bottle for daily use.",
+    keywords: [
+      "rosemary water spray",
+      "hair growth spray",
+      "hair fall control",
+      "rice water hair spray",
+      "Bare Anatomy",
+      "natural hair care Pakistan",
+    ],
+    features: [
+      "Rosemary water with rice water and natural extracts",
+      "Supports hair growth and helps control hair fall",
+      "Refreshes scalp and adds natural shine",
+      "200ml spray bottle for easy daily application",
+      "Free from harsh chemicals",
+    ],
+    caution: [
+      "Avoid contact with eyes. Discontinue use if irritation occurs.",
+      "Store in a cool, dry place away from direct sunlight.",
+    ],
+    image: "/products/rose1.jpg",
+    images: [
+      "/products/rose1.jpg",
+      "/products/rose2.jpg",
+      "/products/rose3.jpg",
+      "/products/rose4.jpg",
+      "/products/rose5.jpg",
+      "/products/rose6.jpg",
+      "/products/rose7.jpg",
+      "/products/rose8.jpg",
+    ],
+    category: "beauty",
+    badge: "48%",
+    isNew: true,
+    inStock: true,
+    hasTieredDiscount: true,
+  },
+  {
+    id: "feg-plus-hair-spray",
+    name: "FEG Plus Hair Growth Spray",
+    price: 799,
+    originalPrice: 1598,
+    description:
+      "FEG Plus hair growth spray formulated to nourish follicles, strengthen roots, and promote thicker-looking hair. Easy spray application for targeted scalp care.",
+    keywords: [
+      "FEG Plus",
+      "hair growth spray",
+      "hair serum spray",
+      "hair regrowth",
+      "scalp treatment",
+      "hair care Pakistan",
+    ],
+    features: [
+      "Nourishes hair follicles for stronger roots",
+      "Promotes thicker, fuller-looking hair",
+      "Easy spray-on application for daily use",
+      "Lightweight formula that doesn't weigh hair down",
+      "Suitable for men and women",
+    ],
+    caution: [
+      "For external use only. Keep out of reach of children.",
+      "Consult a professional if you have a scalp condition.",
+    ],
+    image: "/products/serum1.jpeg",
+    images: [
+      "/products/serum1.jpeg",
+      "/products/serum2.jpeg",
+      "/products/serum3.jpeg",
+      "/products/serum4.jpeg",
+      "/products/serum5.jpeg",
+      "/products/serum6.jpeg",
+    ],
+    category: "beauty",
+    badge: "50%",
+    isNew: true,
+    inStock: true,
+    hasTieredDiscount: true,
+  },
 ];
 
 export function getProductBySlug(slug: string): Product | undefined {
@@ -109,5 +237,6 @@ export function getProductBySlug(slug: string): Product | undefined {
 export const categories = [
   { id: "all", name: "ALL" },
   { id: "kitchen", name: "KITCHEN" },
+  { id: "beauty", name: "BEAUTY" },
   { id: "sale", name: "SALE" },
 ];

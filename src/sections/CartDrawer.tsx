@@ -81,7 +81,11 @@ export function CartDrawer() {
                         <img
                           src={item.product.image}
                           alt={item.product.name}
+                          width={80}
+                          height={80}
                           className="w-full h-full object-cover"
+                          loading="lazy"
+                          decoding="async"
                         />
                       </div>
 

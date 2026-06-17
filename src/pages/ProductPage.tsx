@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, MessageCircle, ShoppingCart, Zap } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Zap } from "lucide-react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { Seo } from "@/components/Seo";
 import { OrderCheckoutForm } from "@/components/OrderCheckoutForm";
 import { ProductGallery } from "@/components/ProductGallery";
 import { QuantitySelector } from "@/components/QuantitySelector";
 import { getProductBySlug } from "@/data/products";
-import { formatDiscountPercentage } from "@/lib/pricing";
+import { formatDiscountPercentage, calculateTieredLineTotal, getTieredDeliveryCharge } from "@/lib/pricing";
+import { TieredDiscount } from "@/components/TieredDiscount";
+import { ProductReviews } from "@/components/ProductReviews";
 import { SITE_URL, type SeoProductDetails } from "@/lib/seo";
 import { useCartStore } from "@/stores/cartStore";
 import { useToastStore } from "@/stores/toastStore";
@@ -40,7 +42,15 @@ export function ProductPage() {
 
   const formatPrice = (price: number) => `Rs. ${price.toLocaleString("en-PK")}`;
 
-  const deliveryCharge = 0;
+  const lineTotal = product
+    ? product.hasTieredDiscount
+      ? calculateTieredLineTotal(product.price, quantity)
+      : product.price * quantity
+    : 0;
+
+  const deliveryCharge = product?.hasTieredDiscount
+    ? getTieredDeliveryCharge(quantity)
+    : 0;
 
   const getWhatsAppOrderUrl = () => {
     if (!product) return "https://wa.me/923346605354";
@@ -49,7 +59,7 @@ export function ProductPage() {
       "Hello Alfado Mart, I want to order:",
       product.name,
       `Quantity: ${quantity}`,
-      `Total: ${formatPrice(product.price * quantity + deliveryCharge)}`,
+      `Total: ${formatPrice(lineTotal + deliveryCharge)}`,
     ].join("\n");
 
     return `https://wa.me/923346605354?text=${encodeURIComponent(message)}`;
@@ -87,6 +97,7 @@ export function ProductPage() {
       <Seo
         title={`${product.name} | Alfado Mart`}
         description={product.description}
+        keywords={product.keywords}
         image={product.image}
         canonicalUrl={productSeo.url ?? SITE_URL}
         pageType="product"
@@ -114,17 +125,17 @@ export function ProductPage() {
               </button>
             </div>
 
-            <div className="md:grid md:grid-cols-[55%_45%]">
-              <div className="relative overflow-hidden border-b border-[#F3F4F6] bg-white md:border-b-0 md:border-r">
+            <article className="md:grid md:grid-cols-[55%_45%]">
+              <section aria-label="Product images" className="relative overflow-hidden border-b border-[#F3F4F6] bg-white md:border-b-0 md:border-r">
                 <ProductGallery images={galleryImages} altBase={product.name} className="w-full" />
                 {discountLabel ? (
                   <div className="absolute left-4 top-4 z-10 bg-[#F2A93B] px-2 py-1 text-xs font-medium tracking-wider text-black">
-                    {discountLabel}
+                    {discountLabel} OFF
                   </div>
                 ) : null}
-              </div>
+              </section>
 
-              <div className="p-4 md:p-12">
+              <section aria-label="Product details" className="p-4 md:p-12">
                 <h1 className="text-xl font-semibold tracking-[-0.01em] text-black md:text-2xl">
                   {product.name}
                 </h1>
@@ -154,9 +165,19 @@ export function ProductPage() {
                     <span className="font-medium text-black">{quantity}</span>
                   </div>
                   <div className="mt-2 flex items-center justify-between text-sm">
+                    <span className="text-[#2A2A2A]">Delivery</span>
+                    <span className={`font-medium ${deliveryCharge === 0 ? "text-[#16A34A]" : "text-black"}`}>
+                      {product.hasTieredDiscount
+                        ? deliveryCharge === 0
+                          ? "🎉 Free Delivery"
+                          : formatPrice(deliveryCharge)
+                        : "Free"}
+                    </span>
+                  </div>
+                  <div className="mt-2 flex items-center justify-between text-sm">
                     <span className="text-[#2A2A2A]">Total</span>
                     <span className="font-semibold text-black">
-                      {formatPrice(product.price * quantity + deliveryCharge)}
+                      {formatPrice(lineTotal + deliveryCharge)}
                     </span>
                   </div>
                 </div>
@@ -170,46 +191,64 @@ export function ProductPage() {
                   </div>
                 </div>
 
-                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                {product.hasTieredDiscount && (
+                  <TieredDiscount
+                    quantity={quantity}
+                    unitPrice={product.price}
+                    onSelectTier={setQuantity}
+                  />
+                )}
+
+                {/* Updated Action Buttons Grid */}
+                <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                  {/* Add To Cart */}
                   <motion.button
                     onClick={handleAddToCart}
-                    whileHover={{ y: -2, scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-                    className="group relative inline-flex min-h-14 w-full overflow-hidden bg-black px-4 py-4 text-sm font-semibold tracking-wider text-white transition-colors duration-200 hover:bg-[#2A2A2A]"
+                    whileHover={{ y: -2, scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="group relative inline-flex h-14 w-full items-center justify-center overflow-hidden rounded-xl bg-black text-sm font-bold tracking-wider text-white transition-all duration-200 hover:bg-[#1A1A1A] hover:shadow-lg"
                     type="button"
                   >
-                    <span className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 skew-x-[-20deg] bg-white/20 transition-transform duration-700 group-hover:translate-x-[320%]" />
-                    <span className="relative flex w-full items-center justify-center gap-2">
-                      <ShoppingCart size={17} />
+                    <span className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 skew-x-[-20deg] bg-white/10 transition-transform duration-1000 group-hover:translate-x-[300%]" />
+                    <span className="relative flex items-center justify-center gap-2">
+                      <ShoppingCart size={18} />
                       ADD TO CART
                     </span>
                   </motion.button>
 
+                  {/* Buy Now */}
                   <motion.button
                     onClick={handleBuyNow}
-                    whileHover={{ y: -2, scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-                    className="group relative inline-flex min-h-14 w-full overflow-hidden border border-black bg-[#F2A93B] px-4 py-4 text-sm font-semibold tracking-wider text-black transition-colors duration-200 hover:bg-[#f5b957]"
+                    whileHover={{ y: -2, scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="group relative inline-flex h-14 w-full items-center justify-center overflow-hidden rounded-xl bg-[#F2A93B] text-sm font-bold tracking-wider text-black transition-all duration-200 hover:bg-[#F5B957] hover:shadow-lg"
                     type="button"
                   >
-                    <span className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 skew-x-[-20deg] bg-white/35 transition-transform duration-700 group-hover:translate-x-[320%]" />
-                    <span className="relative flex w-full items-center justify-center gap-2">
-                      <Zap size={17} />
+                    <span className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 skew-x-[-20deg] bg-white/20 transition-transform duration-1000 group-hover:translate-x-[300%]" />
+                    <span className="relative flex items-center justify-center gap-2">
+                      <Zap size={18} fill="currentColor" />
                       BUY NOW
                     </span>
                   </motion.button>
 
-                  <a
+                  {/* Official WhatsApp Button */}
+                  <motion.a
                     href={getWhatsAppOrderUrl()}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex min-h-14 w-full items-center justify-center gap-2 border border-[#25D366] bg-white px-4 py-4 text-xs font-semibold tracking-wider text-[#128C4A] shadow-[0_10px_24px_rgba(37,211,102,0.14)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#25D366] hover:text-white hover:shadow-[0_16px_34px_rgba(37,211,102,0.24)] active:scale-[0.98] md:text-[13px]"
+                    whileHover={{ y: -2, scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] text-sm font-bold tracking-wider text-white shadow-[0_4px_14px_rgba(37,211,102,0.3)] transition-all duration-200 hover:bg-[#20BA5A] hover:shadow-[0_6px_20px_rgba(37,211,102,0.4)]"
                   >
-                    <MessageCircle size={17} />
-                    ORDER ON WHATSAPP
-                  </a>
+                    <svg 
+                      className="h-5 w-5 fill-current text-white" 
+                      viewBox="0 0 24 24" 
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.454 5.709 1.455h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                    </svg>
+                    WHATSAPP ORDER
+                  </motion.a>
                 </div>
 
                 <p className="mt-6 text-sm leading-relaxed text-[#2A2A2A]">{product.description}</p>
@@ -239,14 +278,10 @@ export function ProductPage() {
                     </ul>
                   </div>
                 </div>
+              </section>
+            </article>
 
-                <div className="mt-8 border-t border-[#F3F4F6] pt-6">
-                  <p className="text-xs text-[#2A2A2A]">
-                    Free shipping on orders over Rs. 3,000. Easy 7-day returns.
-                  </p>
-                </div>
-              </div>
-            </div>
+            <ProductReviews productName={product.name} />
           </div>
         )}
       </main>

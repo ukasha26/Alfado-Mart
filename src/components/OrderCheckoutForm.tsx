@@ -32,7 +32,6 @@ interface FormErrors {
 }
 
 const cityOptions = ["Lahore", "Karachi", "Islamabad", "Rawalpindi", "Other"];
-const deliveryCharge = 0;
 
 export interface OrderLineItem {
   product: Product;
@@ -73,10 +72,41 @@ export function OrderCheckoutForm({
 
   const formatPrice = (price: number) => `Rs. ${price.toLocaleString("en-PK")}`;
 
-  const orderSummaryTotal = useMemo(
-    () => orderItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
+  const totalQuantity = useMemo(
+    () => orderItems.reduce((sum, item) => sum + item.quantity, 0),
     [orderItems]
   );
+
+  const hasFreeDeliveryProduct = useMemo(() => {
+    return orderItems.some((item) => {
+      const productName = item.product.name.toLowerCase();
+      
+      if ('freeDelivery' in item.product && item.product.freeDelivery) {
+        return true;
+      }
+
+      // Apne free delivery products ke keywords yahan daal sakte hain
+      return (
+        productName.includes("cutter") || 
+        productName.includes("dusra-product-yahan-likhein")
+      );
+    });
+  }, [orderItems]);
+
+  const calculatedDeliveryCharge = (totalQuantity >= 2 || hasFreeDeliveryProduct) ? 0 : 200;
+
+  const orderSummarySubtotal = useMemo(() => {
+    return orderItems.reduce((sum, item) => {
+      const basePrice = item.product.price;
+      const qty = item.quantity;
+      if (qty === 1) return sum + basePrice;
+      if (qty === 2) return sum + basePrice * 0.8 * 2;
+      if (qty >= 3) return sum + basePrice * 0.7 * qty;
+      return sum;
+    }, 0);
+  }, [orderItems]);
+
+  const orderSummaryTotal = Math.round(orderSummarySubtotal + calculatedDeliveryCharge);
 
   const orderProductLabel = useMemo(
     () => orderItems.map((item) => `${item.product.name} x${item.quantity}`).join(" | "),
@@ -210,30 +240,38 @@ export function OrderCheckoutForm({
           <p className="mb-2 text-xs font-medium uppercase tracking-wider text-[#2A2A2A]">
             Order Summary
           </p>
-          {orderItems.map((item) => (
-            <div key={item.product.id} className="flex justify-between py-1 text-sm">
-              <span className="text-black">
-                {item.product.name} x{item.quantity}
-              </span>
-              <span className="font-medium text-black">
-                {formatPrice(item.product.price * item.quantity)}
-              </span>
-            </div>
-          ))}
+          {orderItems.map((item) => {
+            const qty = item.quantity;
+            const basePrice = item.product.price;
+            let itemSubtotal = basePrice;
+            if (qty === 2) itemSubtotal = basePrice * 0.8 * 2;
+            if (qty >= 3) itemSubtotal = basePrice * 0.7 * qty;
+
+            return (
+              <div key={item.product.id} className="flex justify-between py-1 text-sm">
+                <span className="text-black">
+                  {item.product.name} x{item.quantity}
+                </span>
+                <span className="font-medium text-black">
+                  {formatPrice(Math.round(itemSubtotal))}
+                </span>
+              </div>
+            );
+          })}
           <div className="mt-2 flex justify-between border-t border-[#e5e7eb] pt-2">
             <span className="text-sm font-medium text-black">Subtotal</span>
-            <span className="text-base font-semibold text-black">{formatPrice(orderSummaryTotal)}</span>
+            <span className="text-base font-semibold text-black">{formatPrice(Math.round(orderSummarySubtotal))}</span>
           </div>
           <div className="flex justify-between py-1 text-sm">
             <span className="text-sm font-medium text-black">Delivery</span>
-            <span className="font-medium text-black">
-              {deliveryCharge === 0 ? "Free" : formatPrice(deliveryCharge)}
+            <span className="font-bold text-green-600">
+              {calculatedDeliveryCharge === 0 ? "Free" : formatPrice(calculatedDeliveryCharge)}
             </span>
           </div>
           <div className="mt-2 flex justify-between border-t border-[#e5e7eb] pt-2">
             <span className="text-sm font-medium text-black">Total</span>
             <span className="text-base font-semibold text-black">
-              {formatPrice(orderSummaryTotal + deliveryCharge)}
+              {formatPrice(orderSummaryTotal)}
             </span>
           </div>
         </div>

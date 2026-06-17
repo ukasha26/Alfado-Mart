@@ -118,7 +118,11 @@ export function Navbar() {
               <img
                 src="https://flagcdn.com/w40/pk.png"
                 alt="PK"
+                width={20}
+                height={14}
                 className="w-5 h-3.5 rounded-sm"
+                loading="lazy"
+                decoding="async"
               />
               <span>PK</span>
             </div>
@@ -182,7 +186,11 @@ export function Navbar() {
                         <img
                           src={product.image}
                           alt={product.name}
+                          width={64}
+                          height={64}
                           className="h-16 w-16 flex-shrink-0 border border-[#F3F4F6] object-cover"
+                          loading="lazy"
+                          decoding="async"
                         />
                         <span className="min-w-0 flex-1">
                           <span className="block text-sm font-medium text-black line-clamp-2">

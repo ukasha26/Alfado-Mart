@@ -25,7 +25,11 @@ export function FeaturedProduct() {
                     <img
                       src={heroImage}
                       alt={product.name}
+                      width={400}
+                      height={300}
                       className="h-full w-full object-contain p-3"
+                      loading="lazy"
+                      decoding="async"
                     />
 
                     {/* Discount tag (top corner) */}

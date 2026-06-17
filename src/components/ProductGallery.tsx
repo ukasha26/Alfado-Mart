@@ -22,8 +22,11 @@ export function ProductGallery({ images, altBase, onImageClick, className }: Pro
               <img
                 src={imagePath}
                 alt={`${altBase} view ${index + 1}`}
+                width={800}
+                height={600}
                 className="h-full w-full object-contain p-3"
-                loading={index === 0 ? "eager" : "lazy"}
+                loading="lazy"
+                decoding="async"
               />
             </button>
           </CarouselItem>

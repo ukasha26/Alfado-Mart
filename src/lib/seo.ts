@@ -1,15 +1,19 @@
 export const SITE_NAME = "Alfado Mart";
 export const SITE_URL = "https://alfadomart.store";
 
-export const DEFAULT_TITLE = "Multi Functional Vegetable Cutter & Stainless Steel Vegetable Cutter | Alfado Mart";
+export const DEFAULT_TITLE = "Alfado Mart | Kitchen Tools, Beauty & Hair Care Products Pakistan";
 export const DEFAULT_DESCRIPTION =
-  "Shop the Multi Functional Vegetable Cutter and Stainless Steel Vegetable Cutter at Alfado Mart with secure checkout, fast support, and free home delivery across Pakistan.";
+  "Shop kitchen essentials, night creams, hair growth sprays and more at Alfado Mart with secure checkout, fast support, and free home delivery across Pakistan.";
 export const DEFAULT_KEYWORDS = [
   "Alfado Mart",
   "Multi Functional Vegetable Cutter",
   "Stainless Steel Vegetable Cutter",
+  "night cream Pakistan",
+  "hair growth spray",
+  "rosemary water spray",
   "vegetable cutter Pakistan",
   "kitchen tools online",
+  "beauty products online",
   "free home delivery",
   "buy online",
   "Alfado Mart products",

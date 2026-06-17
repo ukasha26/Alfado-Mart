@@ -2,6 +2,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Navbar } from "@/sections/Navbar";
+import { TopBannerSlider } from "@/components/TopBannerSlider";
 import { HeroBanner } from "@/sections/HeroBanner";
 import { FeaturedProduct } from "@/sections/FeaturedProduct";
 import { FilterBar } from "@/sections/FilterBar";
@@ -74,14 +75,7 @@ function HomePage() {
         }))}
       />
 
-      <div className="relative w-full overflow-hidden bg-black">
-        <img
-          src="/Banner.png"
-          alt="Site banner"
-          className="block h-auto max-h-[220px] w-full object-contain sm:max-h-[320px] md:h-[420px] md:max-h-none md:object-cover md:object-center"
-        />
-        <div className="pointer-events-none absolute inset-0 bg-black/30" />
-      </div>
+      <TopBannerSlider />
 
       <main>
         <HeroBanner />
