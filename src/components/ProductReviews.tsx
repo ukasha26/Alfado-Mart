@@ -13,21 +13,21 @@ const REVIEWS: Review[] = [
     id: "1",
     name: "Usama",
     date: "March 2026",
-    rating: 5,
+    rating: 4,
     text: "Bohat zabardast quality hai, totally worth the price!",
   },
   {
     id: "2",
     name: "Ayesha Khan",
     date: "February 2026",
-    rating: 5,
+    rating: 4, // 4 Star kar diya
     text: "Delivery time par thi aur product exactly as shown in the picture.",
   },
   {
     id: "3",
     name: "Bilal",
     date: "February 2026",
-    rating: 5,
+    rating: 4, // 4 Star kar diya
     text: "Highly recommended, packaging bohat achi thi.",
   },
   {
@@ -86,7 +86,7 @@ export function ProductReviews({ productName }: ProductReviewsProps) {
             </p>
           </div>
           <div className="flex items-center gap-2 rounded-lg border border-[#F3F4F6] bg-white px-4 py-2">
-            <StarRating rating={5} />
+            <StarRating rating={Math.round(Number(averageRating))} />
             <span className="text-sm font-semibold text-black">{averageRating}</span>
             <span className="text-xs text-[#666]">({REVIEWS.length} reviews)</span>
           </div>
