@@ -35,7 +35,7 @@ const REVIEWS: Review[] = [
     name: "Zara",
     date: "January 2026",
     rating: 5,
-    text: "This product is highly recommended zrur try kren quality bohat achi hai and delivery time par thi thank you for the great service and product quality.",
+    text: "This product is highly recommended zarur try kren quality bohat achi hai and delivery time par thi thank you for the great service and product quality.",
   },
   {
     id: "5",
