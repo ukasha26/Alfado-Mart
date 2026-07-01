@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Check, Loader2 } from "lucide-react";
+import { BadgePercent, Check, Loader2, Sparkles, X } from "lucide-react";
 import type { Product } from "@/data/products";
 import { sendOrderToSheets } from "@/lib/orderService";
 import { useCartStore } from "@/stores/cartStore";
 import { useToastStore } from "@/stores/toastStore";
+import { Backdrop } from "@/components/Backdrop";
 
 declare global {
   interface Window {
@@ -55,10 +56,14 @@ export function OrderCheckoutForm({
 }: OrderCheckoutFormProps) {
   const addToast = useToastStore((s) => s.addToast);
   const clearCart = useCartStore((s) => s.clearCart);
+  const exitIntentHandledRef = useRef(false);
+  const historyShieldRef = useRef(false);
 
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [orderId, setOrderId] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [showExitOffer, setShowExitOffer] = useState(false);
+  const [exitDiscountApplied, setExitDiscountApplied] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
     phone: "",
@@ -72,41 +77,48 @@ export function OrderCheckoutForm({
 
   const formatPrice = (price: number) => `Rs. ${price.toLocaleString("en-PK")}`;
 
+  const FREE_DELIVERY_PRODUCT_IDS = new Set(["vegetable-cutter", "stainless-steel-vegetable-cutter"]);
+  const FREE_DELIVERY_PRODUCT_NAMES = new Set([
+    "3 in 1 multi functional vegetable cutter",
+    "5 in 1 vegetable cutter",
+    "5 in 1 stainless steel vegetable cutter",
+  ]);
+
   const totalQuantity = useMemo(
     () => orderItems.reduce((sum, item) => sum + item.quantity, 0),
     [orderItems]
   );
 
+  const exitDiscountAmount = exitDiscountApplied ? 100 : 0;
+
   const hasFreeDeliveryProduct = useMemo(() => {
     return orderItems.some((item) => {
-      const productName = item.product.name.toLowerCase();
-      
-      if ('freeDelivery' in item.product && item.product.freeDelivery) {
+      const normalizedProductName = item.product.name.toLowerCase().replace(/\s+/g, " ").trim();
+
+      if (FREE_DELIVERY_PRODUCT_IDS.has(item.product.id)) {
         return true;
       }
 
-      // Apne free delivery products ke keywords yahan daal sakte hain
-      return (
-        productName.includes("cutter") || 
-        productName.includes("dusra-product-yahan-likhein")
-      );
+      return FREE_DELIVERY_PRODUCT_NAMES.has(normalizedProductName);
     });
   }, [orderItems]);
 
-  const calculatedDeliveryCharge = (totalQuantity >= 2 || hasFreeDeliveryProduct) ? 0 : 200;
+  const deliveryFee = hasFreeDeliveryProduct ? 0 : 200;
 
   const orderSummarySubtotal = useMemo(() => {
     return orderItems.reduce((sum, item) => {
       const basePrice = item.product.price;
       const qty = item.quantity;
-      if (qty === 1) return sum + basePrice;
-      if (qty === 2) return sum + basePrice * 0.8 * 2;
-      if (qty >= 3) return sum + basePrice * 0.7 * qty;
-      return sum;
+      return sum + basePrice * qty;
     }, 0);
   }, [orderItems]);
 
-  const orderSummaryTotal = Math.round(orderSummarySubtotal + calculatedDeliveryCharge);
+  const orderSummaryTotal = Math.max(
+    0,
+    Math.round(orderSummarySubtotal + deliveryFee - exitDiscountAmount)
+  );
+
+  const orderSummaryOriginalTotal = Math.round(orderSummarySubtotal + deliveryFee);
 
   const orderProductLabel = useMemo(
     () => orderItems.map((item) => `${item.product.name} x${item.quantity}`).join(" | "),
@@ -203,6 +215,58 @@ export function OrderCheckoutForm({
     }
   };
 
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const shieldState = { checkoutExitShield: true };
+    window.history.pushState(shieldState, "", window.location.href);
+    historyShieldRef.current = true;
+
+    const showOffer = () => {
+      if (exitIntentHandledRef.current || exitDiscountApplied) {
+        return;
+      }
+
+      setShowExitOffer(true);
+    };
+
+    const handleMouseOut = (event: MouseEvent) => {
+      if (event.clientY <= 0) {
+        showOffer();
+      }
+    };
+
+    const handlePopState = () => {
+      if (exitIntentHandledRef.current || exitDiscountApplied) {
+        return;
+      }
+
+      showOffer();
+      window.history.pushState(shieldState, "", window.location.href);
+    };
+
+    document.addEventListener("mouseout", handleMouseOut);
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      document.removeEventListener("mouseout", handleMouseOut);
+      window.removeEventListener("popstate", handlePopState);
+
+      if (historyShieldRef.current) {
+        window.history.back();
+      }
+    };
+  }, [exitDiscountApplied]);
+
+  const claimExitDiscount = () => {
+    exitIntentHandledRef.current = true;
+    setExitDiscountApplied(true);
+    setShowExitOffer(false);
+    addToast("Rs. 100 discount applied", "success");
+  };
+
   if (orderSuccess) {
     return (
       <div className="flex flex-col items-center justify-center py-16 md:py-24 px-6">
@@ -243,9 +307,7 @@ export function OrderCheckoutForm({
           {orderItems.map((item) => {
             const qty = item.quantity;
             const basePrice = item.product.price;
-            let itemSubtotal = basePrice;
-            if (qty === 2) itemSubtotal = basePrice * 0.8 * 2;
-            if (qty >= 3) itemSubtotal = basePrice * 0.7 * qty;
+            const itemSubtotal = basePrice * qty;
 
             return (
               <div key={item.product.id} className="flex justify-between py-1 text-sm">
@@ -265,14 +327,27 @@ export function OrderCheckoutForm({
           <div className="flex justify-between py-1 text-sm">
             <span className="text-sm font-medium text-black">Delivery</span>
             <span className="font-bold text-green-600">
-              {calculatedDeliveryCharge === 0 ? "Free" : formatPrice(calculatedDeliveryCharge)}
+              {deliveryFee === 0 ? "Free" : formatPrice(deliveryFee)}
             </span>
           </div>
-          <div className="mt-2 flex justify-between border-t border-[#e5e7eb] pt-2">
+          {exitDiscountApplied ? (
+            <div className="mb-2 flex justify-between rounded-lg bg-green-50 px-3 py-2 text-sm">
+              <span className="font-medium text-green-700">Exit-intent discount</span>
+              <span className="font-semibold text-green-700">- {formatPrice(exitDiscountAmount)}</span>
+            </div>
+          ) : null}
+          <div className="mt-2 flex items-center justify-between border-t border-[#e5e7eb] pt-2">
             <span className="text-sm font-medium text-black">Total</span>
-            <span className="text-base font-semibold text-black">
-              {formatPrice(orderSummaryTotal)}
-            </span>
+            <div className="text-right">
+              {exitDiscountApplied ? (
+                <span className="mb-0.5 block text-xs font-medium text-[#666] line-through">
+                  {formatPrice(orderSummaryOriginalTotal)}
+                </span>
+              ) : null}
+              <span className="text-base font-semibold text-black">
+                {formatPrice(orderSummaryTotal)}
+              </span>
+            </div>
           </div>
         </div>
       )}
@@ -415,6 +490,49 @@ export function OrderCheckoutForm({
           {backLabel}
         </button>
       </div>
+
+      {showExitOffer ? (
+        <div className="fixed inset-0 z-[260] flex items-end justify-center p-4 md:items-center">
+          <Backdrop onClick={() => setShowExitOffer(false)} zIndex={250} />
+          <motion.div
+            initial={{ opacity: 0, y: 24, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 16, scale: 0.98 }}
+            transition={{ duration: 0.25 }}
+            className="relative z-[260] w-full max-w-md overflow-hidden rounded-3xl border border-white/20 bg-[#0B0B0B] text-white shadow-2xl shadow-black/30"
+          >
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(242,169,59,0.18),_transparent_50%)]" />
+            <button
+              type="button"
+              onClick={() => setShowExitOffer(false)}
+              className="absolute right-3 top-3 inline-flex size-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+              aria-label="Close offer"
+            >
+              <X size={16} />
+            </button>
+            <div className="relative space-y-4 p-5 md:p-6">
+              <div className="inline-flex items-center gap-2 rounded-full bg-[#F2A93B] px-3 py-1 text-xs font-bold uppercase tracking-wider text-black">
+                <BadgePercent size={14} />
+                Special Checkout Offer
+              </div>
+              <div>
+                <h3 className="text-2xl font-semibold tracking-[-0.02em]">Rs. 100 OFF - Don't Miss Out!</h3>
+                <p className="mt-2 text-sm leading-6 text-white/75">
+                  Complete your order now and unlock an instant checkout discount before leaving.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={claimExitDiscount}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#F2A93B] px-4 py-3.5 text-sm font-bold text-black transition-transform hover:scale-[1.01]"
+              >
+                <Sparkles size={16} />
+                Claim Rs. 100 Discount
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      ) : null}
     </div>
   );
 }

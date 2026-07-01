@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, ShoppingCart, Zap } from "lucide-react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
@@ -20,15 +20,36 @@ export function ProductPage() {
   const addItem = useCartStore((s) => s.addItem);
   const openCart = useCartStore((s) => s.openCart);
   const addToast = useToastStore((s) => s.addToast);
+  const actionBarRef = useRef<HTMLDivElement | null>(null);
 
   const product = slug ? getProductBySlug(slug) : undefined;
   const [quantity, setQuantity] = useState(1);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [showStickyActions, setShowStickyActions] = useState(false);
 
   useEffect(() => {
     setQuantity(1);
     setShowCheckout(false);
     window.scrollTo({ top: 0, behavior: "instant" });
+  }, [slug]);
+
+  useEffect(() => {
+    const target = actionBarRef.current;
+
+    if (!target || typeof IntersectionObserver === "undefined") {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowStickyActions(!entry.isIntersecting);
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(target);
+
+    return () => observer.disconnect();
   }, [slug]);
 
   const galleryImages = useMemo(
@@ -42,13 +63,20 @@ export function ProductPage() {
 
   const formatPrice = (price: number) => `Rs. ${price.toLocaleString("en-PK")}`;
 
+  const isBundleDealProduct =
+    product?.id === "vegetable-cutter" || product?.id === "stainless-steel-vegetable-cutter";
+
+  const hasTieredOffer = product ? product.hasTieredDiscount || isBundleDealProduct : false;
+
   const lineTotal = product
-    ? product.hasTieredDiscount
+    ? hasTieredOffer
       ? calculateTieredLineTotal(product.price, quantity)
       : product.price * quantity
     : 0;
 
-  const deliveryCharge = product?.hasTieredDiscount
+  const deliveryCharge = isBundleDealProduct
+    ? 0
+    : hasTieredOffer
     ? getTieredDeliveryCharge(quantity)
     : 0;
 
@@ -191,7 +219,7 @@ export function ProductPage() {
                   </div>
                 </div>
 
-                {product.hasTieredDiscount && (
+                {hasTieredOffer && (
                   <TieredDiscount
                     quantity={quantity}
                     unitPrice={product.price}
@@ -200,7 +228,7 @@ export function ProductPage() {
                 )}
 
                 {/* Updated Action Buttons Grid */}
-                <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                <div ref={actionBarRef} className="mt-6 grid gap-3 sm:grid-cols-3">
                   {/* Add To Cart */}
                   <motion.button
                     onClick={handleAddToCart}
@@ -250,6 +278,29 @@ export function ProductPage() {
                     WHATSAPP ORDER
                   </motion.a>
                 </div>
+
+                {showStickyActions ? (
+                  <div className="fixed inset-x-0 bottom-0 z-40 border-t border-black/5 bg-white/90 px-4 py-3 shadow-[0_-8px_32px_rgba(0,0,0,0.12)] backdrop-blur-md md:hidden">
+                    <div className="mx-auto grid max-w-[1200px] grid-cols-2 gap-3">
+                      <motion.button
+                        onClick={handleAddToCart}
+                        whileTap={{ scale: 0.99 }}
+                        className="inline-flex h-12 items-center justify-center rounded-xl bg-black text-xs font-bold tracking-wider text-white shadow-lg shadow-black/10"
+                        type="button"
+                      >
+                        ADD TO CART
+                      </motion.button>
+                      <motion.button
+                        onClick={handleBuyNow}
+                        whileTap={{ scale: 0.99 }}
+                        className="inline-flex h-12 items-center justify-center rounded-xl bg-[#F2A93B] text-xs font-bold tracking-wider text-black shadow-lg shadow-black/10"
+                        type="button"
+                      >
+                        BUY NOW
+                      </motion.button>
+                    </div>
+                  </div>
+                ) : null}
 
                 <p className="mt-6 text-sm leading-relaxed text-[#2A2A2A]">{product.description}</p>
 

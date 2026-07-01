@@ -152,6 +152,10 @@ export function Seo({
         property: "og:image",
         content: resolvedImage,
       }),
+      syncElement("meta", "seo-og-image-alt", {
+        property: "og:image:alt",
+        content: resolvedTitle,
+      }),
       syncElement("meta", "seo-og-site-name", {
         property: "og:site_name",
         content: SITE_NAME,
@@ -171,6 +175,10 @@ export function Seo({
       syncElement("meta", "seo-twitter-image", {
         name: "twitter:image",
         content: resolvedImage,
+      }),
+      syncElement("meta", "seo-twitter-image-alt", {
+        name: "twitter:image:alt",
+        content: resolvedTitle,
       }),
       syncElement(
         "script",

@@ -1,13 +1,17 @@
 import {
   calculateTieredLineTotal,
-  getTieredDeliveryCharge,
 } from "@/lib/pricing";
+import { Truck } from "lucide-react";
 
 interface TieredDiscountProps {
   quantity: number;
   unitPrice: number;
   onSelectTier: (quantity: number) => void;
+  hasFreeBaseDelivery?: boolean;
 }
+
+const DEFAULT_BUNDLE_BASE_PRICE = 2399;
+const FREE_BASE_DELIVERY_UNIT_PRICES = new Set([2399, 2490, 1390]);
 
 const TIERS = [
   { minQty: 1, label: "Buy 1", discount: 0, description: "Regular price" },
@@ -17,16 +21,39 @@ const TIERS = [
 
 const formatPrice = (price: number) => `Rs. ${price.toLocaleString("en-PK")}`;
 
-function getDeliveryLabel(tierQty: number): string {
-  return getTieredDeliveryCharge(tierQty) > 0
-    ? `+ ${formatPrice(getTieredDeliveryCharge(tierQty))} Delivery`
-    : "🎉 Free Delivery";
+function getResolvedBasePrice(unitPrice: number) {
+  return unitPrice === 2490 ? DEFAULT_BUNDLE_BASE_PRICE : unitPrice;
 }
 
-export function TieredDiscount({ quantity, unitPrice, onSelectTier }: TieredDiscountProps) {
-  const activeDeliveryLabel = getDeliveryLabel(
-    quantity >= 3 ? 3 : quantity >= 2 ? 2 : 1
-  );
+function hasFreeDeliveryForBaseTier(
+  unitPrice: number,
+  hasFreeBaseDelivery?: boolean
+) {
+  if (typeof hasFreeBaseDelivery === "boolean") {
+    return hasFreeBaseDelivery;
+  }
+
+  return FREE_BASE_DELIVERY_UNIT_PRICES.has(unitPrice);
+}
+
+function getDeliveryLabel(tierQty: number, baseDeliveryIsFree: boolean): string {
+  if (tierQty >= 2) {
+    return "Free Delivery";
+  }
+
+  return baseDeliveryIsFree ? "Free Delivery" : "+ Rs. 200 Delivery";
+}
+
+export function TieredDiscount({
+  quantity,
+  unitPrice,
+  onSelectTier,
+  hasFreeBaseDelivery,
+}: TieredDiscountProps) {
+  const resolvedBasePrice = getResolvedBasePrice(unitPrice);
+  const baseDeliveryIsFree = hasFreeDeliveryForBaseTier(unitPrice, hasFreeBaseDelivery);
+  const activeTier = quantity >= 3 ? 3 : quantity >= 2 ? 2 : 1;
+  const activeDeliveryLabel = getDeliveryLabel(activeTier, baseDeliveryIsFree);
 
   return (
     <section
@@ -45,9 +72,10 @@ export function TieredDiscount({ quantity, unitPrice, onSelectTier }: TieredDisc
           const isActive =
             tier.minQty === 3 ? quantity >= 3 : quantity === tier.minQty;
 
-          const lineTotal = calculateTieredLineTotal(unitPrice, tier.minQty);
-          const deliveryCharge = getTieredDeliveryCharge(tier.minQty);
-          const tierGrandTotal = lineTotal + deliveryCharge;
+          const lineTotal = calculateTieredLineTotal(resolvedBasePrice, tier.minQty);
+          const tierGrandTotal = lineTotal;
+          const deliveryLabel = getDeliveryLabel(tier.minQty, baseDeliveryIsFree);
+          const showDeliveryIcon = true;
 
           return (
             <li key={tier.label} role="presentation">
@@ -89,17 +117,12 @@ export function TieredDiscount({ quantity, unitPrice, onSelectTier }: TieredDisc
                   </div>
                 </div>
                 <p
-                  className={`mt-1.5 text-xs font-medium ${
-                    deliveryCharge > 0
-                      ? isActive
-                        ? "text-[#F2A93B]"
-                        : "text-[#D97706]"
-                      : isActive
-                        ? "text-[#86EFAC]"
-                        : "text-[#16A34A]"
+                  className={`mt-1.5 inline-flex items-center gap-1.5 text-xs font-medium ${
+                    isActive ? "text-[#86EFAC]" : "text-[#16A34A]"
                   }`}
                 >
-                  {getDeliveryLabel(tier.minQty)}
+                  {showDeliveryIcon ? <Truck size={12} className="shrink-0" /> : null}
+                  {deliveryLabel}
                 </p>
               </div>
             </li>
