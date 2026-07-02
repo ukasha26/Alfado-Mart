@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { BadgePercent, Check, Loader2, Sparkles, X } from "lucide-react";
 import type { Product } from "@/data/products";
 import { sendOrderToSheets } from "@/lib/orderService";
+import { calculateOrderLineTotal, shouldApplyTieredDiscount } from "@/lib/pricing";
 import { useCartStore } from "@/stores/cartStore";
 import { useToastStore } from "@/stores/toastStore";
 import { Backdrop } from "@/components/Backdrop";
@@ -77,7 +78,6 @@ export function OrderCheckoutForm({
 
   const formatPrice = (price: number) => `Rs. ${price.toLocaleString("en-PK")}`;
 
-  const FREE_DELIVERY_PRODUCT_IDS = new Set(["vegetable-cutter", "stainless-steel-vegetable-cutter"]);
   const FREE_DELIVERY_PRODUCT_NAMES = new Set([
     "3 in 1 multi functional vegetable cutter",
     "5 in 1 vegetable cutter",
@@ -95,7 +95,11 @@ export function OrderCheckoutForm({
     return orderItems.some((item) => {
       const normalizedProductName = item.product.name.toLowerCase().replace(/\s+/g, " ").trim();
 
-      if (FREE_DELIVERY_PRODUCT_IDS.has(item.product.id)) {
+      if (item.product.id === "vegetable-cutter" || item.product.id === "stainless-steel-vegetable-cutter") {
+        return true;
+      }
+
+      if (shouldApplyTieredDiscount(item.product) && item.quantity >= 2) {
         return true;
       }
 
@@ -107,9 +111,7 @@ export function OrderCheckoutForm({
 
   const orderSummarySubtotal = useMemo(() => {
     return orderItems.reduce((sum, item) => {
-      const basePrice = item.product.price;
-      const qty = item.quantity;
-      return sum + basePrice * qty;
+      return sum + calculateOrderLineTotal(item.product, item.quantity);
     }, 0);
   }, [orderItems]);
 
@@ -306,8 +308,7 @@ export function OrderCheckoutForm({
           </p>
           {orderItems.map((item) => {
             const qty = item.quantity;
-            const basePrice = item.product.price;
-            const itemSubtotal = basePrice * qty;
+            const itemSubtotal = calculateOrderLineTotal(item.product, qty);
 
             return (
               <div key={item.product.id} className="flex justify-between py-1 text-sm">

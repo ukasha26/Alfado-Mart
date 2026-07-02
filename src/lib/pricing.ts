@@ -16,6 +16,11 @@ export const TIERED_DISCOUNT_PRODUCT_IDS = new Set([
   "feg-plus-hair-spray",
 ]);
 
+export const TIERED_BUNDLE_PRODUCT_IDS = new Set([
+  "vegetable-cutter",
+  "stainless-steel-vegetable-cutter",
+]);
+
 export function getTieredExtraDiscountPercent(quantity: number): number {
   if (quantity >= 3) return 30;
   if (quantity >= 2) return 20;
@@ -36,6 +41,26 @@ export function calculateTieredLineTotal(price: number, quantity: number): numbe
 
 export function calculateTieredOrderTotal(price: number, quantity: number): number {
   return calculateTieredLineTotal(price, quantity) + getTieredDeliveryCharge(quantity);
+}
+
+export function shouldApplyTieredDiscount(product: {
+  id: string;
+  hasTieredDiscount?: boolean;
+}): boolean {
+  return Boolean(product.hasTieredDiscount) || TIERED_DISCOUNT_PRODUCT_IDS.has(product.id) || TIERED_BUNDLE_PRODUCT_IDS.has(product.id);
+}
+
+export function calculateOrderLineTotal(
+  product: {
+    id: string;
+    price: number;
+    hasTieredDiscount?: boolean;
+  },
+  quantity: number
+): number {
+  return shouldApplyTieredDiscount(product)
+    ? calculateTieredLineTotal(product.price, quantity)
+    : product.price * quantity;
 }
 
 export function hasTieredDiscount(productId: string): boolean {

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Product } from "@/data/products";
+import { calculateOrderLineTotal } from "@/lib/pricing";
 
 export interface CartItem {
   product: Product;
@@ -46,7 +47,7 @@ export const useCartStore = create<CartState>()(
           items: newItems,
           totalItems: newItems.reduce((s, i) => s + i.quantity, 0),
           subtotal: newItems.reduce(
-            (s, i) => s + i.product.price * i.quantity,
+            (s, i) => s + calculateOrderLineTotal(i.product, i.quantity),
             0
           ),
         });
@@ -58,7 +59,7 @@ export const useCartStore = create<CartState>()(
           items: newItems,
           totalItems: newItems.reduce((s, i) => s + i.quantity, 0),
           subtotal: newItems.reduce(
-            (s, i) => s + i.product.price * i.quantity,
+            (s, i) => s + calculateOrderLineTotal(i.product, i.quantity),
             0
           ),
         });
@@ -75,7 +76,7 @@ export const useCartStore = create<CartState>()(
           items: newItems,
           totalItems: newItems.reduce((s, i) => s + i.quantity, 0),
           subtotal: newItems.reduce(
-            (s, i) => s + i.product.price * i.quantity,
+            (s, i) => s + calculateOrderLineTotal(i.product, i.quantity),
             0
           ),
         });
