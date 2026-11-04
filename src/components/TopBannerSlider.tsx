@@ -5,7 +5,7 @@ export function TopBannerSlider() {
       className="w-full overflow-hidden bg-[#F7F1EB]"
     >
       <img
-        src="/Banner.jpg"
+        src="/Banner.jfif"
         alt="Alfado Mart beauty, home gadget, and kitchen product collection"
         width={855}
         height={407}
