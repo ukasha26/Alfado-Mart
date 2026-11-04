@@ -40,33 +40,8 @@ export function Navbar() {
 
   return (
     <>
-      <div className="fixed inset-x-0 top-0 z-[130] overflow-hidden border-b border-emerald-950 bg-black text-white">
-        <div className="flex min-w-max animate-ticker whitespace-nowrap py-2 text-[10px] font-medium uppercase tracking-[0.3em] sm:text-xs sm:tracking-[0.35em]">
-          <span className="inline-flex items-center gap-3 px-8">
-            <span className="rounded-full border border-white/70 bg-emerald-500 px-3 py-1 text-[10px] font-black tracking-[0.28em] text-white shadow-[0_0_18px_rgba(16,185,129,0.35)]">
-              Azzadi Offer
-            </span>
-            <span>Celebrate freedom with bold savings | 47% OFF on selected deals | Free Home Delivery | 7-Day Return Policy</span>
-          </span>
-          <span className="inline-flex items-center gap-3 px-8" aria-hidden="true">
-            <span className="rounded-full border border-white/70 bg-emerald-500 px-3 py-1 text-[10px] font-black tracking-[0.28em] text-white shadow-[0_0_18px_rgba(16,185,129,0.35)]">
-              Azzadi Offer
-            </span>
-            <span>Celebrate freedom with bold savings | 47% OFF on selected deals | Free Home Delivery | 7-Day Return Policy</span>
-          </span>
-          <span className="inline-flex items-center gap-3 px-8" aria-hidden="true">
-            <span className="rounded-full border border-white/70 bg-emerald-500 px-3 py-1 text-[10px] font-black tracking-[0.28em] text-white shadow-[0_0_18px_rgba(16,185,129,0.35)]">
-              Azzadi Offer
-            </span>
-            <span>Celebrate freedom with bold savings | 47% OFF on selected deals | Free Home Delivery | 7-Day Return Policy</span>
-          </span>
-        </div>
-      </div>
-
-      <div aria-hidden="true" className="h-8 sm:h-9" />
-
       <nav
-        className={`sticky top-8 sm:top-9 bg-white transition-all duration-200 ${
+        className={`sticky top-0 bg-white transition-all duration-200 ${
           isSticky ? "border-b border-[#F3F4F6] shadow-sm" : ""
         }`}
         style={{ zIndex: 100 }}
@@ -199,6 +174,7 @@ export function Navbar() {
                           alt={product.name}
                           width={64}
                           height={64}
+                          sizes="64px"
                           className="h-16 w-16 flex-shrink-0 border border-[#F3F4F6] object-cover"
                           loading="lazy"
                           decoding="async"

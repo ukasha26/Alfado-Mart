@@ -27,6 +27,7 @@ export function FeaturedProduct() {
                       alt={product.name}
                       width={400}
                       height={300}
+                      sizes="(min-width: 1280px) 25vw, (min-width: 480px) 50vw, 100vw"
                       className="h-full w-full object-contain p-3"
                       loading="lazy"
                       decoding="async"
@@ -54,4 +55,3 @@ export function FeaturedProduct() {
     </section>
   );
 }
-

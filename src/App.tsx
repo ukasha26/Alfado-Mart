@@ -66,6 +66,7 @@ function HomePage() {
           name: product.name,
           description: product.description,
           image: product.image,
+          images: product.images,
           price: product.price,
           currency: "PKR" as const,
           availability: product.inStock ? ("InStock" as const) : ("OutOfStock" as const),

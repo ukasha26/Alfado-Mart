@@ -27,6 +27,7 @@ export interface SeoProductDetails {
   name: string;
   description: string;
   image: string;
+  images?: string[];
   price: number;
   currency?: string;
   availability?: "InStock" | "OutOfStock";
@@ -142,19 +143,18 @@ export function buildStructuredData({
     }
   });
 
-  // Shared helper to generate aggregate ratings and review fields safely
   const getRatingAndReviews = (product: SeoProductDetails) => {
-    const finalRating = product.ratingValue ?? 4.9;
-    const finalCount = product.reviewCount ?? 18;
-    const itemsList = product.reviewsList && product.reviewsList.length > 0 
-      ? product.reviewsList 
-      : [{ author: "Usama", rating: 5, body: "Excellent quality and quick service!" }];
+    if (!product.ratingValue || !product.reviewCount) {
+      return {};
+    }
+
+    const itemsList = product.reviewsList ?? [];
 
     return {
       aggregateRating: {
         "@type": "AggregateRating",
-        "ratingValue": finalRating.toString(),
-        "reviewCount": finalCount.toString()
+        "ratingValue": product.ratingValue.toString(),
+        "reviewCount": product.reviewCount.toString()
       },
       review: itemsList.map((rev) => ({
         "@type": "Review",
@@ -180,7 +180,9 @@ export function buildStructuredData({
       "@context": "https://schema.org",
       "@type": "Product",
       name: productDetails.name,
-      image: [toAbsoluteUrl(productDetails.image)],
+      image: (productDetails.images?.length ? productDetails.images : [productDetails.image]).map(
+        (productImage) => toAbsoluteUrl(productImage)
+      ),
       description: trimDescription(productDetails.description || description || DEFAULT_DESCRIPTION),
       sku: productDetails.sku ?? productDetails.name,
       brand: {
@@ -213,7 +215,9 @@ export function buildStructuredData({
             item: {
               "@type": "Product",
               name: product.name,
-              image: [toAbsoluteUrl(product.image)],
+              image: (product.images?.length ? product.images : [product.image]).map(
+                (productImage) => toAbsoluteUrl(productImage)
+              ),
               description: trimDescription(product.description || description || DEFAULT_DESCRIPTION),
               sku: product.sku ?? product.name,
               brand: {
@@ -236,7 +240,7 @@ export function buildStructuredData({
         "@id": `${websiteUrl}#organization`,
         name: SITE_NAME,
         url: websiteUrl,
-        logo: toAbsoluteUrl("/favicon.svg"),
+        logo: toAbsoluteUrl("/favicon.png"),
       },
       {
         "@type": "WebSite",
@@ -246,6 +250,11 @@ export function buildStructuredData({
         description: trimDescription(description || DEFAULT_DESCRIPTION),
         publisher: {
           "@id": `${websiteUrl}#organization`,
+        },
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${websiteUrl}?q={search_term_string}`,
+          "query-input": "required name=search_term_string",
         },
       },
       ...(featuredItems ? [featuredItems] : []),

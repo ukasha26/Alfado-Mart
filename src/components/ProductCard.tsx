@@ -51,6 +51,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
             alt={product.name}
             width={400}
             height={300}
+            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
             loading="lazy"
             decoding="async"

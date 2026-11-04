@@ -107,6 +107,7 @@ export function ProductPage() {
     name: product.name,
     description: product.description,
     image: product.image,
+    images: product.images,
     price: product.price,
     currency: "PKR",
     availability: product.inStock ? "InStock" : "OutOfStock",

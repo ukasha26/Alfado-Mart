@@ -124,6 +124,7 @@ export function ProductGallery({ images = [], mediaItems, altBase, onImageClick,
                       alt={mediaItem.alt ?? `${altBase} view ${index + 1}`}
                       width={1200}
                       height={1200}
+                      sizes="(min-width: 768px) 55vw, 100vw"
                       className="aspect-square h-full w-full object-contain p-3 transition-transform duration-500 ease-out group-hover:scale-[1.01] sm:aspect-[4/3] sm:p-5"
                       loading={index === 0 ? "eager" : "lazy"}
                       decoding="async"
@@ -201,6 +202,7 @@ export function ProductGallery({ images = [], mediaItems, altBase, onImageClick,
                       alt={`${altBase} thumbnail ${index + 1}`}
                       width={160}
                       height={160}
+                      sizes="96px"
                       className="h-full w-full object-cover p-1.5"
                       loading="lazy"
                       decoding="async"
