@@ -105,9 +105,16 @@ export function CartDrawer() {
                           </button>
                         </div>
 
-                        <p className="text-sm font-extrabold text-red-600 mt-1">
-                          {formatPrice(item.product.price)}
-                        </p>
+                        <div className="mt-1 flex items-baseline gap-2">
+                          <span className="text-sm font-extrabold text-black">
+                            {formatPrice(item.product.price)}
+                          </span>
+                          {item.product.originalPrice ? (
+                            <span className="text-xs font-medium text-red-600 line-through decoration-red-600 decoration-2">
+                              {formatPrice(item.product.originalPrice)}
+                            </span>
+                          ) : null}
+                        </div>
 
                         <div className="mt-2">
                           <QuantitySelector
@@ -135,7 +142,7 @@ export function CartDrawer() {
                   </span>
                 </div>
                 <p className="text-xs text-[#2A2A2A] mb-4">
-                  Shipping calculated at checkout
+                  Free delivery included on every order
                 </p>
                 <button
                   onClick={() => {

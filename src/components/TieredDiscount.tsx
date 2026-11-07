@@ -18,12 +18,8 @@ const TIERS = [
 
 const formatPrice = (price: number) => `Rs. ${price.toLocaleString("en-PK")}`;
 
-function getDeliveryLabel(tierQty: number): string {
-  if (tierQty >= 2) {
-    return "Free Delivery";
-  }
-
-  return "+ Rs. 200 Delivery";
+function getDeliveryLabel(): string {
+  return "Free Delivery";
 }
 
 export function TieredDiscount({
@@ -31,8 +27,7 @@ export function TieredDiscount({
   unitPrice,
   onSelectTier,
 }: TieredDiscountProps) {
-  const activeTier = quantity >= 3 ? 3 : quantity >= 2 ? 2 : 1;
-  const activeDeliveryLabel = getDeliveryLabel(activeTier);
+  const activeDeliveryLabel = getDeliveryLabel();
 
   return (
     <section
@@ -53,7 +48,7 @@ export function TieredDiscount({
 
           const lineTotal = calculateTieredLineTotal(unitPrice, tier.minQty);
           const tierGrandTotal = lineTotal;
-          const deliveryLabel = getDeliveryLabel(tier.minQty);
+          const deliveryLabel = getDeliveryLabel();
           const showDeliveryIcon = true;
 
           return (

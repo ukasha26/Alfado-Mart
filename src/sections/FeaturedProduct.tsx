@@ -46,6 +46,17 @@ export function FeaturedProduct() {
                   <h2 className="line-clamp-2 text-base font-semibold leading-tight text-black md:text-xl">
                     {product.name}
                   </h2>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="font-extrabold text-black">
+                      Rs. {product.price.toLocaleString("en-PK")}
+                    </span>
+                    {product.originalPrice ? (
+                      <span className="text-sm font-medium text-red-600 line-through decoration-red-600 decoration-2">
+                        Rs. {product.originalPrice.toLocaleString("en-PK")}
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="mt-1 text-xs font-medium text-emerald-700">Free Delivery</p>
                 </div>
               </article>
             );

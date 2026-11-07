@@ -22,8 +22,8 @@ export const products: Product[] = [
   {
     id: "bare-anatomy-rosemary-spray",
     name: "Bare Anatomy Rosemary Water Spray for Hair Growth & Hair Fall Control - With Rice Water & 100% Natural Extracts - 200ml",
-    price: 999,
-    originalPrice: 1998,
+    price: 1199,
+    originalPrice: 2198,
     description:
       "Rosemary water hair spray enriched with rice water and 100% natural extracts to support hair growth, reduce hair fall, and refresh the scalp. 200ml bottle for daily use.",
     keywords: [
@@ -66,8 +66,8 @@ export const products: Product[] = [
   {
     id: "ear",
     name: "Ear Cleaning Device - Gentle Home Ear Cleaner",
-    price: 799,
-    originalPrice: 1598,
+    price: 999,
+    originalPrice: 1798,
     description: "Gentle ear cleaning device for home use. Safe and easy to use with multiple tips and LED guidance.",
     keywords: ["ear cleaner", "ear cleaning", "home ear cleaner", "earwax removal"],
     features: [
@@ -106,8 +106,8 @@ export const products: Product[] = [
   {
     id: "kit",
     name: "Mobile Screen Magnifier",
-    price: 1199,
-    originalPrice: 2398,
+    price: 1399,
+    originalPrice: 2598,
     description:
       "A foldable mobile screen magnifier that enlarges your phone display for videos, movies, reels and online viewing with a clearer and more comfortable experience.",
     keywords: ["mobile screen magnifier", "phone screen magnifier", "mobile projector screen", "phone display enlarger"],
@@ -130,8 +130,8 @@ export const products: Product[] = [
   {
     id: "vegetable-cutter",
     name: "3 in  1 Multi Functional Vegetable Cutter",
-    price: 1999,
-    originalPrice: 3599,
+    price: 2199,
+    originalPrice: 3799,
     description: "3-in-1 multi-functional cutter for grating, shredding, and slicing. Suction base; easy to clean.",
     keywords: [
       "vegetable slicer",
@@ -172,8 +172,8 @@ export const products: Product[] = [
   {
     id: "stainless-steel-vegetable-cutter",
     name: "5 in 1 Stainless Steel Vegetable Cutter",
-    price: 999,
-    originalPrice: 2199,
+    price: 1199,
+    originalPrice: 2399,
     description:
       "A durable 5 in 1 stainless steel vegetable cutter designed for fast slicing, shredding and grating. It is built for everyday kitchen use and delivers smooth cutting performance with detachable parts for easier cleaning.",
     keywords: [
@@ -214,8 +214,8 @@ export const products: Product[] = [
   {
     id: "health-healer-night-cream",
     name: "The Health Healer Night Cream: Renew and Refresh Your Skin",
-    price: 799,
-    originalPrice: 1598,
+    price: 999,
+    originalPrice: 1798,
     description:
       "Overnight renewal night cream that deeply hydrates, brightens dull skin, and helps reduce fine lines while you sleep. Lightweight, non-greasy formula suitable for daily use.",
     keywords: [
@@ -253,6 +253,82 @@ export const products: Product[] = [
     isNew: true,
     inStock: true,
     hasTieredDiscount: true,
+  },
+  {
+    id: "arenicia-booster-shot-cream",
+    name: "Arenicia Vitamin C Booster Shot Cream 30ml",
+    price: 1499,
+    originalPrice: 2998,
+    description:
+      "Give tired, dull-looking skin a fresh confidence boost with Arenicia Vitamin C Booster Shot Cream. This lightweight daily formula helps brighten the appearance of uneven tone, supports a smoother-looking complexion, and leaves skin feeling soft, hydrated, and ready to glow.",
+    keywords: [
+      "Arenicia booster shot cream",
+      "Vitamin C cream Pakistan",
+      "brightening face cream",
+      "glowing skin cream",
+      "Arenicia skincare",
+    ],
+    features: [
+      "Vitamin C-inspired brightening care for a radiant-looking complexion",
+      "Lightweight cream texture for comfortable daily use",
+      "Helps skin look smoother, fresher, and more even-toned",
+      "Hydrating finish without a heavy, greasy feel",
+      "Free delivery across Pakistan",
+    ],
+    caution: [
+      "For external use only. Avoid direct contact with eyes.",
+      "Patch test before first use and discontinue if irritation occurs.",
+    ],
+    image: "/products/Arencia_Vitamin_C_Booster_Shot_30ml_Alfado_Mart.webp",
+    images: [
+      "/products/Arencia_Vitamin_C_Booster_Shot_30ml_Alfado_Mart.webp",
+      "/products/Booster_Shot_30ml.webp",
+      "/products/arencia.webp",
+      "/products/arencia4.webp",
+      "/products/arencia.jpg",
+    ],
+    category: "beauty",
+    badge: "NEW",
+    isNew: true,
+    inStock: true,
+  },
+  {
+    id: "proskire-white-hair-solution",
+    name: "Proskire White Hair Solution",
+    price: 1299,
+    originalPrice: 2598,
+    description:
+      "Refresh your hair-care routine with Proskire White Hair Solution, a convenient solution designed to help hair look richer, healthier, and more youthful. Easy to add to your regular routine, it is made for people who want a confident, well-groomed appearance.",
+    keywords: [
+      "Proskire White Hair Solution",
+      "white hair solution Pakistan",
+      "hair care Pakistan",
+      "grey hair care",
+      "Proskire hair solution",
+    ],
+    features: [
+      "Designed for a more polished, youthful-looking hair appearance",
+      "Simple routine-friendly application",
+      "Helps hair look nourished and well cared for",
+      "A practical choice for everyday hair-care maintenance",
+      "Free delivery across Pakistan",
+    ],
+    caution: [
+      "For external use only. Follow the product packaging instructions.",
+      "Patch test before first use and discontinue if irritation occurs.",
+    ],
+    image: "/products/proskire1.webp",
+    images: [
+      "/products/proskire1.webp",
+      "/products/proskire2.webp",
+      "/products/proskire3.webp",
+      "/products/proskire7.webp",
+      "/products/proskire8.webp",
+    ],
+    category: "beauty",
+    badge: "NEW",
+    isNew: true,
+    inStock: true,
   },
 ];
 

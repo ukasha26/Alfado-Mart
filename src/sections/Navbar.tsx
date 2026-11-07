@@ -40,6 +40,9 @@ export function Navbar() {
 
   return (
     <>
+      <div className="flex min-h-10 items-center justify-center bg-[#716D6D] px-4 text-center text-xs font-semibold uppercase tracking-[0.12em] text-white md:text-sm">
+        FREE DELIVERY ALL OVER THE PAKISTAN
+      </div>
       <nav
         className={`sticky top-0 bg-white transition-all duration-200 ${
           isSticky ? "border-b border-[#F3F4F6] shadow-sm" : ""
@@ -183,7 +186,7 @@ export function Navbar() {
                           <span className="block text-sm font-medium text-black line-clamp-2">
                             {product.name}
                           </span>
-                          <span className="mt-1 block text-sm font-extrabold text-red-600">
+                          <span className="mt-1 block text-sm font-extrabold text-black">
                             Rs. {product.price.toLocaleString("en-PK")}
                           </span>
                         </span>

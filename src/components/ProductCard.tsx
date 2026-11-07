@@ -42,7 +42,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
           delay: index * 0.05,
           ease: [0.4, 0, 0.2, 1],
         }}
-        className="group min-w-0 cursor-pointer border-0 md:border md:border-[#F3F4F6] bg-white transition-colors duration-300 hover:md:border-black"
+        className="group min-w-0 cursor-pointer overflow-hidden rounded-xl border border-[#E5E7EB] bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-black hover:shadow-md"
       >
         {/* Image Container */}
         <div className="relative overflow-hidden" style={{ aspectRatio: "4/3" }}>
@@ -92,15 +92,16 @@ export function ProductCard({ product, index }: ProductCardProps) {
             {product.name}
           </h3>
           <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-            <span className="text-lg font-extrabold text-red-600 md:text-xl">
+            <span className="text-lg font-extrabold text-black md:text-xl">
               {formatPrice(product.price)}
             </span>
             {product.originalPrice && (
-              <span className="text-sm font-medium text-black line-through decoration-black/60 decoration-2 md:text-base">
+              <span className="text-sm font-medium text-red-600 line-through decoration-red-600 decoration-2 md:text-base">
                 {formatPrice(product.originalPrice)}
               </span>
             )}
           </div>
+          <p className="mt-2 text-xs font-medium text-emerald-700">Free Delivery across Pakistan</p>
 
           {/* Mobile Add to Cart */}
           <button

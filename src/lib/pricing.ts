@@ -26,10 +26,8 @@ export function getTieredExtraDiscountPercent(quantity: number): number {
   return 0;
 }
 
-export const TIERED_SINGLE_DELIVERY_CHARGE = 200;
-
-export function getTieredDeliveryCharge(quantity: number): number {
-  return quantity === 1 ? TIERED_SINGLE_DELIVERY_CHARGE : 0;
+export function getTieredDeliveryCharge(): number {
+  return 0;
 }
 
 export function calculateTieredLineTotal(price: number, quantity: number): number {
@@ -39,7 +37,7 @@ export function calculateTieredLineTotal(price: number, quantity: number): numbe
 }
 
 export function calculateTieredOrderTotal(price: number, quantity: number): number {
-  return calculateTieredLineTotal(price, quantity) + getTieredDeliveryCharge(quantity);
+  return calculateTieredLineTotal(price, quantity) + getTieredDeliveryCharge();
 }
 
 export function shouldApplyTieredDiscount(product: {

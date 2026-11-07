@@ -7,7 +7,7 @@ import { OrderCheckoutForm } from "@/components/OrderCheckoutForm";
 import { ProductGallery } from "@/components/ProductGallery";
 import { QuantitySelector } from "@/components/QuantitySelector";
 import { getProductBySlug } from "@/data/products";
-import { formatDiscountPercentage, calculateTieredLineTotal, getTieredDeliveryCharge } from "@/lib/pricing";
+import { formatDiscountPercentage, calculateTieredLineTotal } from "@/lib/pricing";
 import { TieredDiscount } from "@/components/TieredDiscount";
 import { ProductReviews } from "@/components/ProductReviews";
 import { SITE_URL, type SeoProductDetails } from "@/lib/seo";
@@ -84,7 +84,7 @@ export function ProductPage() {
       : product.price * quantity
     : 0;
 
-  const deliveryCharge = hasTieredOffer ? getTieredDeliveryCharge(quantity) : 0;
+  const deliveryCharge = 0;
 
   const getWhatsAppOrderUrl = () => {
     if (!product) return "https://wa.me/923346605354";
@@ -176,11 +176,11 @@ export function ProductPage() {
                 </h1>
 
                 <div className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <span className="text-2xl font-extrabold text-red-600 md:text-3xl">
+                  <span className="text-2xl font-extrabold text-black md:text-3xl">
                     {formatPrice(product.price)}
                   </span>
                   {product.originalPrice && (
-                    <span className="text-base font-medium text-black line-through decoration-black/60 decoration-2">
+                    <span className="text-base font-medium text-red-600 line-through decoration-red-600 decoration-2">
                       {formatPrice(product.originalPrice)}
                     </span>
                   )}
@@ -201,12 +201,8 @@ export function ProductPage() {
                   </div>
                   <div className="mt-2 flex items-center justify-between text-sm">
                     <span className="text-[#2A2A2A]">Delivery</span>
-                    <span className={`font-medium ${deliveryCharge === 0 ? "text-[#16A34A]" : "text-black"}`}>
-                      {hasTieredOffer
-                        ? deliveryCharge === 0
-                          ? "🎉 Free Delivery"
-                          : formatPrice(deliveryCharge)
-                        : "Free"}
+                    <span className="font-medium text-[#16A34A]">
+                      Free Delivery
                     </span>
                   </div>
                   <div className="mt-2 flex items-center justify-between text-sm">

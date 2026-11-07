@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { BadgePercent, Check, Loader2, Sparkles, X } from "lucide-react";
 import type { Product } from "@/data/products";
 import { buildMetaPurchaseCustomData, DEFAULT_PURCHASE_CURRENCY, sendOrderToSheets } from "@/lib/orderService";
-import { calculateOrderLineTotal, shouldApplyTieredDiscount } from "@/lib/pricing";
+import { calculateOrderLineTotal } from "@/lib/pricing";
 import { useCartStore } from "@/stores/cartStore";
 import { useToastStore } from "@/stores/toastStore";
 import { Backdrop } from "@/components/Backdrop";
@@ -78,24 +78,9 @@ export function OrderCheckoutForm({
 
   const formatPrice = (price: number) => `Rs. ${price.toLocaleString("en-PK")}`;
 
-  const totalQuantity = useMemo(
-    () => orderItems.reduce((sum, item) => sum + item.quantity, 0),
-    [orderItems]
-  );
-
   const exitDiscountAmount = exitDiscountApplied ? 100 : 0;
 
-  const hasFreeDeliveryProduct = useMemo(() => {
-    return orderItems.some((item) => {
-      if (shouldApplyTieredDiscount(item.product) && item.quantity >= 2) {
-        return true;
-      }
-
-      return false;
-    });
-  }, [orderItems]);
-
-  const deliveryFee = hasFreeDeliveryProduct ? 0 : 200;
+  const deliveryFee = 0;
 
   const orderSummarySubtotal = useMemo(() => {
     return orderItems.reduce((sum, item) => {
@@ -319,7 +304,7 @@ export function OrderCheckoutForm({
           <div className="flex justify-between py-1 text-sm">
             <span className="text-sm font-medium text-black">Delivery</span>
             <span className="font-bold text-green-600">
-              {deliveryFee === 0 ? "Free" : formatPrice(deliveryFee)}
+              Free Delivery
             </span>
           </div>
           {exitDiscountApplied ? (
